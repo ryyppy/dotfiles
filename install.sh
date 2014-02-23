@@ -12,5 +12,4 @@ ln -s $DIR/jshintrc .jshintrc
 ln -s $DIR/tmux.conf .tmux.conf
 ln -s $DIR/oh-my-zsh .oh-my-zsh
 ln -s $DIR/zshrc .zshrc
-
-
+ln -s $DIR/bin .bin

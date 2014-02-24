@@ -9,5 +9,8 @@ bash install.sh
 
 Notes
 =====
-- Install JsHint (npm, Syntastic)
-- Use "vim-nox", if Debian (python-interface, ConqueTerm)
+- Install JSHint (npm, Syntastic)
+- Use VIM-Version 7.4 or higher with python-support
+- Since vim-airline needs an adapted fontset (otherwise VIMs statusbar appears glitchy)
+  ... either use prepatched fontset (https://github.com/Lokaltog/powerline-fonts)
+  ... or patch your very own fontset (https://powerline.readthedocs.org/en/latest/fontpatching.html)

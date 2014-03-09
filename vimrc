@@ -10,9 +10,13 @@ set tabstop=4 shiftwidth=4 expandtab
 set autoindent
 set hlsearch
 
+" Initialize installed plugins
+call pathogen#infect()
+
 filetype on
 filetype plugin on
 syntax on
+
 
 set background=dark
 let g:solarized_termcolors=256
@@ -28,6 +32,13 @@ let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
 
 
+" Ultisnip Configuration
+let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+let g:UltiSnipsExpandTrigger="<c-k>"
+let g:UltiSnipsJumpForwardTrigger="<c-k>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
+
 " Tagbar Configuration
 let g:tagbar_type_javascript = { 'ctagsbin' : 'jsctags' } 
 
@@ -41,10 +52,12 @@ let g:tagbar_type_javascript = { 'ctagsbin' : 'jsctags' }
 let g:NERDTreeDirArrows=0 " fixes weird characters as list arrows
 " autocmd vimenter * NERDTree " open automatically on VIM startup
 
-
 " Keymappings
 nmap <S-Enter> O<Esc>
 nmap <CR> o<Esc>
+
+"imap <C-Q> <Plug>snipMateNextOrTrigger
+"smap <C-Q> <Plug>snipMateNextOrTrigger
 
 " YouCompleteMe needs version 7.4 or higher
 if v:version < '704' || !has('python')
@@ -57,5 +70,4 @@ if executable('jshint')
     let g:syntastic_javascript_jshint_conf='$HOME/.jshintrc'
 endif
 
-" Initialize installed plugins
-call pathogen#infect()
+

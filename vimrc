@@ -8,6 +8,7 @@ set nobackup nowritebackup
 " Fix the tabbing system
 set tabstop=4 shiftwidth=4 expandtab
 set autoindent
+set hlsearch
 
 filetype on
 filetype plugin on
@@ -26,11 +27,12 @@ let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
 
-let g:syntastic_javascript_checkers=['jshint']
-let g:syntastic_javascript_jshint_conf='$HOME/.jshintrc'
+
+" Tagbar Configuration
+let g:tagbar_type_javascript = { 'ctagsbin' : 'jsctags' } 
 
 " YouCompleteMe Configuration
-let g:ycm_path_to_python_interpreter = '/usr/bin/python'
+" let g:ycm_path_to_python_interpreter = '/usr/bin/python'
 
 " Tern_for_vim Configuration
 " let g:tern_map_keys=1
@@ -43,6 +45,17 @@ let g:NERDTreeDirArrows=0 " fixes weird characters as list arrows
 " Keymappings
 nmap <S-Enter> O<Esc>
 nmap <CR> o<Esc>
+
+" YouCompleteMe needs version 7.4 or higher
+if v:version < '704' || !has('python')
+    call add(g:pathogen_disabled, 'YouCompleteMe')
+endif
+
+" Enable jshint checker, if jshint is available
+if executable('jshint')
+    let g:syntastic_javascript_checkers=['jshint']
+    let g:syntastic_javascript_jshint_conf='$HOME/.jshintrc'
+endif
 
 " Initialize installed plugins
 call pathogen#infect()

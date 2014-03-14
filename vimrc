@@ -9,6 +9,7 @@ set nobackup nowritebackup
 set tabstop=4 shiftwidth=4 expandtab
 set autoindent
 set hlsearch
+set splitright
 
 " Initialize installed plugins
 call pathogen#infect()
@@ -16,7 +17,6 @@ call pathogen#infect()
 filetype on
 filetype plugin on
 syntax on
-
 
 set background=dark
 let g:solarized_termcolors=256
@@ -31,6 +31,8 @@ let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
 
+" vim-javascript Configuration
+let javascript_ignore_javaScriptdoc=0
 
 " Ultisnip Configuration
 let g:UltiSnipsSnippetDirectories=["UltiSnips"]

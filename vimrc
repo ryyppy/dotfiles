@@ -54,9 +54,6 @@ nmap <CR> o<Esc>
 set laststatus=2
 let g:airline_powerline_fonts=1
 
-" vim-javascript 
-let javascript_ignore_javaScriptdoc=0
-
 " Ultisnip 
 let g:UltiSnipsSnippetDirectories=["UltiSnips"]
 let g:UltiSnipsExpandTrigger="<c-k>"

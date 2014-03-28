@@ -21,8 +21,15 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'pangloss/vim-javascript'
 Bundle 'elzr/vim-json'
 Bundle 'tpope/vim-surround'
-Bundle 'Valloric/YouCompleteMe'
+Bundle 'mustache/vim-mustache-handlebars'
+Bundle 'lukaszb/vim-web-indent'
 
+" YouCompleteMe 
+if has('python')
+    if v:version >= '704' 
+        Bundle 'Valloric/YouCompleteMe'
+    endif
+endif
 
 set noet ai cin bs=2 cb=unnamed
 set number ruler wrap autoread showcmd showmode fdm=marker
@@ -39,6 +46,7 @@ set splitright
 "Enable the neat filetype and syntax sugar
 filetype on
 filetype plugin on
+filetype plugin indent on
 syntax on
 
 "Set color scheme
@@ -70,17 +78,39 @@ let g:vim_json_syntax_conceal=0
 " NERDtree 
 let g:NERDTreeDirArrows=0 " fixes weird characters as list arrows
 
-" YouCompleteMe 
-if v:version < '704' || !has('python')
-    call add(g:pathogen_disabled, 'YouCompleteMe')
-endif
+" Mustache-Handlebar
+let g:mustache_abbreviations = 1
 
 " Syntastic Configuration
+
 let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
-
+let syntastic_mode_map = { 'passive_filetypes': ['html'] }
+    
 if executable('jshint')
     let g:syntastic_javascript_checkers=['jshint']
-    let g:syntastic_javascript_jshint_conf='$HOME/.jshintrc'
+    
+    function s:find_jshintrc(dir)
+        let l:found = globpath(a:dir, '.jshintrc')
+        if filereadable(l:found)
+            return l:found
+        endif
+
+        let l:parent = fnamemodify(a:dir, ':h')
+        if l:parent != a:dir
+            return s:find_jshintrc(l:parent)
+        endif
+
+        return "~/.jshintrc"
+    endfunction
+
+    function UpdateJsHintConf()
+        let l:dir = expand('%:p:h')
+        let l:jshintrc = s:find_jshintrc(l:dir)
+        let g:syntastic_javascript_jshint_conf = l:jshintrc
+    endfunction
+
+    " Finds and sets the nearest .jshintrc file
+    " au BufEnter * call UpdateJsHintConf()
 endif

@@ -16,13 +16,13 @@ Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
 Bundle 'marijnh/tern_for_vim'
 Bundle 'SirVer/ultisnips'
-Bundle 'bling/vim-airline'
 Bundle 'tpope/vim-fugitive'
 Bundle 'pangloss/vim-javascript'
 Bundle 'elzr/vim-json'
 Bundle 'tpope/vim-surround'
 Bundle 'mustache/vim-mustache-handlebars'
 Bundle 'lukaszb/vim-web-indent'
+Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
 
 " YouCompleteMe 
 if has('python')
@@ -31,15 +31,16 @@ if has('python')
     endif
 endif
 
+set encoding=utf-8
 set noet ai cin bs=2 cb=unnamed
-set number ruler wrap autoread showcmd showmode fdm=marker
+set number ruler nowrap autoread showcmd showmode fdm=marker
 
 " Disable the creation of backup files (those with ~)
 set nobackup nowritebackup
 
 " Fix the tabbing system
 set tabstop=4 shiftwidth=4 expandtab
-set autoindent
+set autoindent smartindent nocindent indentexpr=
 set hlsearch
 set splitright
 
@@ -49,18 +50,21 @@ filetype plugin on
 filetype plugin indent on
 syntax on
 
+" Powerline
+set laststatus=2
+
 "Set color scheme
+colorscheme distinguished
 set background=dark
+set t_Co=256
 let g:solarized_termcolors=256
-colorscheme solarized 
 
 " Keymappings
 nmap <S-Enter> O<Esc>
 nmap <CR> o<Esc>
 
-" Airline (fancy status bar)
-set laststatus=2
-let g:airline_powerline_fonts=1
+" Opening and closing braces
+imap <C-F> {<CR>}<C-O>O
 
 " Ultisnip 
 let g:UltiSnipsSnippetDirectories=["UltiSnips"]
@@ -82,7 +86,6 @@ let g:NERDTreeDirArrows=0 " fixes weird characters as list arrows
 let g:mustache_abbreviations = 1
 
 " Syntastic Configuration
-
 let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
@@ -90,27 +93,4 @@ let syntastic_mode_map = { 'passive_filetypes': ['html'] }
     
 if executable('jshint')
     let g:syntastic_javascript_checkers=['jshint']
-    
-    function s:find_jshintrc(dir)
-        let l:found = globpath(a:dir, '.jshintrc')
-        if filereadable(l:found)
-            return l:found
-        endif
-
-        let l:parent = fnamemodify(a:dir, ':h')
-        if l:parent != a:dir
-            return s:find_jshintrc(l:parent)
-        endif
-
-        return "~/.jshintrc"
-    endfunction
-
-    function UpdateJsHintConf()
-        let l:dir = expand('%:p:h')
-        let l:jshintrc = s:find_jshintrc(l:dir)
-        let g:syntastic_javascript_jshint_conf = l:jshintrc
-    endfunction
-
-    " Finds and sets the nearest .jshintrc file
-    " au BufEnter * call UpdateJsHintConf()
 endif

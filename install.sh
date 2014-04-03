@@ -5,10 +5,13 @@ echo $DIR
 
 cd ~
 
-ln -s $DIR/vim .vim
-ln -s $DIR/vimrc .vimrc
-ln -s $DIR/jshintrc .jshintrc
-ln -s $DIR/tmux.conf .tmux.conf
-ln -s $DIR/oh-my-zsh .oh-my-zsh
-ln -s $DIR/zshrc .zshrc
-ln -s $DIR/bin .bin
+[[ ! -s ~/.vim ]] && ln -s $DIR/vim ~/.vim
+[[ ! -s ~/.vimrc ]] && ln -s $DIR/vimrc ~/.vimrc
+[[ ! -s ~/.jshintrc ]] && ln -s $DIR/jshintrc ~/.jshintrc
+[[ ! -s ~/.tmux.conf ]] && ln -s $DIR/tmux.conf ~/.tmux.conf
+[[ ! -s ~/.oh-my-zsh ]] && ln -s $DIR/oh-my-zsh ~/.oh-my-zsh
+[[ ! -s ~/.zshrc ]] && ln -s $DIR/zshrc ~/.zshrc
+[[ ! -s ~/.bin ]] && ln -s $DIR/bin ~/.bin
+
+[[ ! -s ~/.config ]] && mkdir ~/.config
+[[ ! -s ~/.config/powerline ]] && ln -s $DIR/powerline  ~/.config/powerline

@@ -173,3 +173,25 @@ ${1:this}.__defineSetter_(${2:prop}, function(){
 	return $2;
 });
 endsnippet
+
+snippet funscope ";(function(){})();" b
+;(function(){
+
+"use strict";
+
+${1://Scoped code}
+
+})();
+endsnippet
+
+snippet errcb "function(err){}" w
+function(err){
+	${1://Callback code}
+}
+endsnippet
+
+snippet anfun "function(){}" w
+function(){
+	${1://Function code}
+}
+endsnippet

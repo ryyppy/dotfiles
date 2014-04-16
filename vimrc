@@ -22,12 +22,16 @@ Bundle 'elzr/vim-json'
 Bundle 'tpope/vim-surround'
 Bundle 'mustache/vim-mustache-handlebars'
 Bundle 'lukaszb/vim-web-indent'
-Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+Bundle 'Valloric/MatchTagAlways'
+Bundle 'tmhedberg/matchit'
+Bundle 'scrooloose/nerdcommenter'
+Bundle 'groenewege/vim-less'
 
 " YouCompleteMe 
 if has('python')
     if v:version >= '704' 
         Bundle 'Valloric/YouCompleteMe'
+        Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
     endif
 endif
 
@@ -52,12 +56,13 @@ syntax on
 
 " Powerline
 set laststatus=2
+set noshowmode
 
 "Set color scheme
-colorscheme distinguished
 set background=dark
+"let g:solarized_termcolors=256
+colorscheme solarized
 set t_Co=256
-let g:solarized_termcolors=256
 
 " Keymappings
 nmap <S-Enter> O<Esc>
@@ -90,7 +95,8 @@ let g:syntastic_check_on_open=1
 let g:syntastic_check_on_wq=0 " don't check on :wq and :x
 let g:syntastic_enable_signs=1 " errors on left side
 let syntastic_mode_map = { 'passive_filetypes': ['html'] }
-    
+let g:syntastic_less_use_less_lint = 0   
+
 if executable('jshint')
     let g:syntastic_javascript_checkers=['jshint']
 endif

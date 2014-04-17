@@ -27,8 +27,9 @@ if [[ `uname` = 'Darwin' ]]; then
     export PATH=/usr/texbin:$PATH
 
 elif [[ `uname` = 'Linux' ]]; then
-    export PATH=/usr/local/share/npm/bin:$PATH
-    export PATH=/development/orthus/lib/node/bin:$PATH
+    POWERLINE_ZSH="~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh"
+
+    export PATH=/opt/node/bin:$PATH
 fi
 
 

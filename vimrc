@@ -97,6 +97,9 @@ let g:syntastic_enable_signs=1 " errors on left side
 let syntastic_mode_map = { 'passive_filetypes': ['html'] }
 let g:syntastic_less_use_less_lint = 0   
 
+" You Complete Me Configuration
+let g:ycm_autoclose_preview_window_after_completion=1
+
 if executable('jshint')
     let g:syntastic_javascript_checkers=['jshint']
 endif

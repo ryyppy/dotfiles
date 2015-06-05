@@ -9,12 +9,12 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 " Load Bundles
-Bundle 'yonchu/accelerated-smooth-scroll'
+" Bundle 'yonchu/accelerated-smooth-scroll'
 Bundle 'scrooloose/nerdtree'
 Bundle 'moll/vim-node'
 Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
-Bundle 'marijnh/tern_for_vim'
+" Bundle 'marijnh/tern_for_vim'
 Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-fugitive'
 Bundle 'pangloss/vim-javascript'
@@ -26,6 +26,7 @@ Bundle 'Valloric/MatchTagAlways'
 Bundle 'tmhedberg/matchit'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'groenewege/vim-less'
+Bundle 'duff/vim-bufonly'
 
 " YouCompleteMe 
 if has('python')
@@ -70,6 +71,9 @@ nmap <CR> o<Esc>
 
 " Opening and closing braces
 imap <C-F> {<CR>}<C-O>O
+
+" Git-Commit formatting
+autocmd Filetype gitcommit setlocal wrap spell textwidth=72
 
 " Ultisnip 
 let g:UltiSnipsSnippetDirectories=["UltiSnips"]

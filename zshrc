@@ -29,7 +29,7 @@ if [[ `uname` = 'Darwin' ]]; then
 elif [[ `uname` = 'Linux' ]]; then
     POWERLINE_ZSH="~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh"
 
-    export PATH=/opt/node/bin:$PATH
+    export PATH="$PATH:/opt/node/bin"
 fi
 
 

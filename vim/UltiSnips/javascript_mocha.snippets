@@ -20,6 +20,30 @@ describe("${1:module}", function(){
 });
 endsnippet
 
+snippet before "before" b
+before(function(){
+	$0
+});
+endsnippet
+
+snippet beforeEach "beforeEach" b
+beforeEach(function(){
+	$0
+});
+endsnippet
+
+snippet after "after" b
+after(function(){
+	$0
+});
+endsnippet
+
+snippet afterEach "afterEach" b
+afterEach(function(){
+	$0
+});
+endsnippet
+
 snippet ex "expect" b
 expect(${1:value}).$0
 endsnippet
@@ -37,7 +61,11 @@ expect(${1:value}).to.be.false;
 endsnippet
 
 snippet exun "expect undefined" b
-expect(${1:value}).to${2:.not}.be.undefined;
+expect(${1:value}).to.be.undefined;
+endsnippet
+
+snippet exnun "expect not undefined" b
+expect(${1:value}).not.to.be.undefined;
 endsnippet
 
 snippet exnu "expect null" b
@@ -70,6 +98,14 @@ endsnippet
 
 snippet expr "expect to have property" b
 expect(${1:obj}).to.have.property("${2:prop}");
+endsnippet
+
+snippet exlt "expect to be below" b
+expect(${1:obj}).to.be.below("${2:prop}");
+endsnippet
+
+snippet exgt "expect to be greater than" b
+expect(${1:obj}).to.be.above("${2:prop}");
 endsnippet
 
 snippet exdpr "expect deep property" b

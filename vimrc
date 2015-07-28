@@ -10,6 +10,7 @@ Bundle 'gmarik/vundle'
 
 " Load Bundles
 " Bundle 'yonchu/accelerated-smooth-scroll'
+Bundle 'vim-ruby/vim-ruby'
 Bundle 'scrooloose/nerdtree'
 Bundle 'moll/vim-node'
 Bundle 'scrooloose/syntastic'

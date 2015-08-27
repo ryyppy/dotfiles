@@ -28,6 +28,7 @@ Bundle 'tmhedberg/matchit'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'groenewege/vim-less'
 Bundle 'duff/vim-bufonly'
+Bundle 'mxw/vim-jsx' 
 
 " YouCompleteMe 
 if has('python')
@@ -105,6 +106,10 @@ let g:syntastic_less_use_less_lint = 0
 " You Complete Me Configuration
 let g:ycm_autoclose_preview_window_after_completion=1
 
-if executable('jshint')
-    let g:syntastic_javascript_checkers=['jshint']
+"if executable('jshint')
+    "let g:syntastic_javascript_checkers=['jshint']
+"endif
+
+if executable('eslint')
+    let g:syntastic_javascript_checkers=['eslint']
 endif

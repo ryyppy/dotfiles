@@ -9,7 +9,7 @@ bash install.sh
 
 Notes
 =====
-- Install JSHint (npm, Syntastic)
+- Install ESLint (npm, Syntastic)
 - Use VIM-Version 7.4 or higher with python-support
 - Since vim-airline needs an adapted fontset (otherwise VIMs statusbar appears glitchy)
   ... either use prepatched fontset (https://github.com/Lokaltog/powerline-fonts)

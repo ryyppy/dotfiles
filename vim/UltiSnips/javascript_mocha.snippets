@@ -1,11 +1,11 @@
 priority -49
 
 snippet chaipro "Puts all requirements for Promise Testsuite" b
-var chai = require("chai");
+var chai = require('chai');
 var expect = chai.expect;
-var chaiAsPromised = require("chai-as-promised");
-var sinonChai = require("sinon-chai");
-var sinon = require("sinon");
+var chaiAsPromised = require('chai-as-promised');
+var sinonChai = require('sinon-chai');
+var sinon = require('sinon');
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -15,31 +15,31 @@ $0
 endsnippet
 
 snippet desc "describe" b
-describe("${1:module}", function(){
+describe('${1:module}', () => {
 	$0
 });
 endsnippet
 
 snippet before "before" b
-before(function(){
+before(() => {
 	$0
 });
 endsnippet
 
 snippet beforeEach "beforeEach" b
-beforeEach(function(){
+beforeEach(() => {
 	$0
 });
 endsnippet
 
 snippet after "after" b
-after(function(){
+after(() => {
 	$0
 });
 endsnippet
 
 snippet afterEach "afterEach" b
-afterEach(function(){
+afterEach(() => {
 	$0
 });
 endsnippet
@@ -97,19 +97,19 @@ expect(${1:value}).to.have.length(${2:number});
 endsnippet
 
 snippet expr "expect to have property" b
-expect(${1:obj}).to.have.property("${2:prop}");
+expect(${1:obj}).to.have.property('${2:prop}');
 endsnippet
 
 snippet exlt "expect to be below" b
-expect(${1:obj}).to.be.below("${2:prop}");
+expect(${1:obj}).to.be.below('${2:prop}');
 endsnippet
 
 snippet exgt "expect to be greater than" b
-expect(${1:obj}).to.be.above("${2:prop}");
+expect(${1:obj}).to.be.above('${2:prop}');
 endsnippet
 
 snippet exdpr "expect deep property" b
-expect(${1:obj}).to.have.deep.property("${2:prop}");
+expect(${1:obj}).to.have.deep.property('${2:prop}');
 endsnippet
 
 snippet exhame "expect have members" b
@@ -121,13 +121,13 @@ expect(${1:value}).to.include.members(${2:arr});
 endsnippet
 
 snippet it "it" b
-it("${1:should...}", function(){
+it('${1:should...}', () => {
 	$0
 });
 endsnippet
 
 snippet itdo "it async" b
-it("${1:should...}", function(done){
+it('${1:should...}', (done) => {
 	$0
 });
 endsnippet

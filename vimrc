@@ -16,6 +16,7 @@ Bundle 'moll/vim-node'
 Bundle 'scrooloose/syntastic'
 Bundle 'majutsushi/tagbar'
 " Bundle 'marijnh/tern_for_vim'
+Bundle 'tmhedberg/matchit'
 Bundle 'SirVer/ultisnips'
 Bundle 'tpope/vim-fugitive'
 Bundle 'pangloss/vim-javascript'
@@ -29,12 +30,16 @@ Bundle 'scrooloose/nerdcommenter'
 Bundle 'groenewege/vim-less'
 Bundle 'duff/vim-bufonly'
 Bundle 'mxw/vim-jsx' 
+Bundle 'bling/vim-airline'
+Bundle 'kchmck/vim-coffee-script'
+Bundle 'lambdatoast/elm.vim'
+Bundle 'facebook/vim-flow'
 
 " YouCompleteMe 
 if has('python')
     if v:version >= '704' 
         Bundle 'Valloric/YouCompleteMe'
-        Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
+        "Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
     endif
 endif
 
@@ -46,16 +51,26 @@ set number ruler nowrap autoread showcmd showmode fdm=marker
 set nobackup nowritebackup
 
 " Fix the tabbing system
-set tabstop=4 shiftwidth=4 expandtab
+set tabstop=2 shiftwidth=2 expandtab
 set autoindent smartindent nocindent indentexpr=
 set hlsearch
 set splitright
+
+" Tabbing for specific filetypes
+au FileType coffee setl sw=2 sts=2 et
+
+
+" Specific tabbing for languages
+autocmd Filetype javascript set tabstop=2 shiftwidth=2 expandtab
 
 "Enable the neat filetype and syntax sugar
 filetype on
 filetype plugin on
 filetype plugin indent on
 syntax on
+
+" Enable javascript highlighting for flowtype
+au BufNewFile,BufRead *.flow set filetype=javascript
 
 " Powerline
 set laststatus=2
@@ -64,7 +79,8 @@ set noshowmode
 "Set color scheme
 set background=dark
 "let g:solarized_termcolors=256
-colorscheme solarized
+"colorscheme solarized
+colorscheme grb256
 set t_Co=256
 
 " Keymappings
@@ -76,6 +92,10 @@ imap <C-F> {<CR>}<C-O>O
 
 " Git-Commit formatting
 autocmd Filetype gitcommit setlocal wrap spell textwidth=72
+
+" MD formatting
+autocmd BufNewFile,BufRead *.md set filetype=markdown
+autocmd Filetype markdown setlocal wrap textwidth=80 
 
 " Ultisnip 
 let g:UltiSnipsSnippetDirectories=["UltiSnips"]
@@ -109,7 +129,10 @@ let g:ycm_autoclose_preview_window_after_completion=1
 "if executable('jshint')
     "let g:syntastic_javascript_checkers=['jshint']
 "endif
-
+"
 if executable('eslint')
     let g:syntastic_javascript_checkers=['eslint']
 endif
+
+" Flowtype config
+let g:flow#autoclose = 1

@@ -13,8 +13,15 @@ plugins=(git)
 # Unix specific bin paths 
 export PATH=$HOME/.bin:/usr/local/bin:/usr/local/sbin:$PATH
 
-# Addon script powerline... override it when needed
-POWERLINE_ZSH="/usr/local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh"
+############
+# Some useful aliases
+############
+
+#$1: path to search recursively
+#$2: word to look for 
+gref() {
+    grep -rnw $1 -e $2
+}
 
 #Load OS specific configurations
 if [[ `uname` = 'Darwin' ]]; then
@@ -27,8 +34,6 @@ if [[ `uname` = 'Darwin' ]]; then
     export PATH=/usr/texbin:$PATH
 
 elif [[ `uname` = 'Linux' ]]; then
-    POWERLINE_ZSH="~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh"
-
     export PATH="$PATH:/opt/node/bin"
 fi
 
@@ -39,5 +44,4 @@ fi
 #Initialize the Oh-My-Zsh framework
 source $ZSH/oh-my-zsh.sh
 
-#Powerline needs to be initialized after oh-my-zsh
-#[[ -s $POWERLINE_ZSH ]] && source $POWERLINE_ZSH 
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting

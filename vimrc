@@ -34,6 +34,7 @@ Bundle 'bling/vim-airline'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'lambdatoast/elm.vim'
 Bundle 'facebook/vim-flow'
+Bundle 'mephux/bro.vim'
 
 " YouCompleteMe 
 if has('python')

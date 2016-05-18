@@ -161,6 +161,18 @@ endsnippet
 
 # vim:ft=snippets:
 
+snippet flow "@flow meta"
+/* @flow */
+endsnippet 
+
+snippet imp "default import" b
+import ${1:name} from '${2:file}';
+endsnippet
+
+snippet imp{ "named import" b
+import { ${1:named} } from '${2:file}'; 
+endsnippet
+
 # Own snippets
 snippet getter "__defineGetter__ for object"
 ${1:this}.__defineGetter_(${2:prop}, function(){

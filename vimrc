@@ -59,6 +59,7 @@ set splitright
 
 " Tabbing for specific filetypes
 au FileType coffee setl sw=2 sts=2 et
+au FileType elm setl sw=2 sts=2 et
 
 
 " Specific tabbing for languages
@@ -90,6 +91,9 @@ nmap <CR> o<Esc>
 
 " Opening and closing braces
 imap <C-F> {<CR>}<C-O>O
+
+" Puts a literal ^I (literal tab character)
+:inoremap <S-Tab> <C-V><Tab>
 
 " Git-Commit formatting
 autocmd Filetype gitcommit setlocal wrap spell textwidth=72
@@ -135,5 +139,17 @@ if executable('eslint')
     let g:syntastic_javascript_checkers=['eslint']
 endif
 
+""""""""""""""""""""
 " Flowtype config
+""""""""""""""""""""
 let g:flow#autoclose = 1
+
+"Use locally installed flow
+let local_flow = finddir('node_modules', '.;') . '/.bin/flow'
+if matchstr(local_flow, "^\/\\w") == ''
+    let local_flow= getcwd() . "/" . local_flow
+endif
+
+if executable(local_flow)
+  let g:flow#flowpath = local_flow
+endif

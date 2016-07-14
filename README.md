@@ -16,6 +16,18 @@ git submodule update --init --recursive
 bash install.sh
 ```
 
+OSX From Scratch Prerequisites
+=======
+
+If you are setting up your machine from scratch:
+
+```
+# Requires XCode to be installed
+sudo xcodebuild -license
+
+# Install brew -> http://brew.sh/
+```
+
 OSX Prerequisites
 =======
 
@@ -34,30 +46,17 @@ so create a `~/.zshrc.local` to apply additional settings.
 
 Notes
 =====
-- Install ESLint (npm, Syntastic)
-- Use VIM-Version 7.4 or higher with python-support
-- Since vim-airline needs an adapted fontset (otherwise VIMs statusbar appears glitchy)
-  ... either use prepatched fontset (https://github.com/Lokaltog/powerline-fonts)
-  ... or patch your very own fontset (https://powerline.readthedocs.org/en/latest/fontpatching.html)
+* Install ESLint (npm, Syntastic)
+* Use VIM-Version 7.4 or higher with python-support
+* Since vim-airline needs an adapted fontset (otherwise VIMs statusbar appears glitchy)
+ * ... either use prepatched fontset (https://github.com/Lokaltog/powerline-fonts)
+ * ... or patch your very own fontset (https://powerline.readthedocs.org/en/latest/fontpatching.html)
 
 
 OSX Hints
 =====
-Tmux + Vim make some problems, you may need to install additional tools to make them
-work as expected:
 
-Install VIM + Powerline correctly:
-- http://blog.codefront.net/2013/10/27/installing-powerline-on-os-x-homebrew/
-
-brew install reattach-to-user-namespace
-
-Sources:
-- https://coderwall.com/p/j9wnfw
-- http://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
-
-
-Terminal related tips
-======
-
-* I used iTerm2 for most of my TMUX sessions 
-** http://plausiblethought.net/drop-down-terminal-with-iterm2/
+* VIM & Tmux & System Clipboard:
+  * https://coderwall.com/p/j9wnfw
+* Tmux + Clipboard
+  * http://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/

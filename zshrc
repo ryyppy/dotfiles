@@ -29,6 +29,9 @@ if [[ `uname` = 'Darwin' ]]; then
     LANG=en_US.UTF-8
     LC_ALL=en_US.UTF-8
 
+		alias flow='$(npm-which flow)'
+		alias eslint='$(npm-which eslint)'
+
     export PATH=/usr/local/share/npm/bin:$PATH
     export PATH=~/.scripts:$PATH
     export PATH=/usr/texbin:$PATH
@@ -37,6 +40,10 @@ elif [[ `uname` = 'Linux' ]]; then
     export PATH="$PATH:/opt/node/bin"
 fi
 
+command -v nvim > /dev/null 2>&1 || { alias vim='nvim'; }
+
+#Somehow this needs git
+export GIT_EDITOR=vim
 
 #Load local configuration not populated in the dotfiles repo
 [[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local

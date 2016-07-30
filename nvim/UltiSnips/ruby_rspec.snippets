@@ -1,0 +1,114 @@
+snippet ethc "expect to have_content" !iw
+expect(${0:page}).to have_content ${2:expected_content}
+endsnippet
+
+snippet enthc "expect not_to have_content" !iw
+expect(${1:page}).not_to have_content ${2:inexpected_content}
+endsnippet
+
+snippet ete "expect to equal" !iw
+expect(${0:page.current_url}).to eq(${1:foo})
+endsnippet
+
+snippet ente "expect not_to equal" !iw
+expect(${1:page.current_url}).not_to eq(${2:foo_url})
+endsnippet
+
+snippet etb "expect to_be" !iw
+expect(${0:actual}).to be ${1}
+endsnippet
+
+snippet entb "expect not_to be" !iw
+expect(${0:actual}).not_to be ${1}
+endsnippet
+
+snippet etm "expect to match" !iw
+expect(${0:a_string}).to match ${1:/a_regex/}
+endsnippet
+
+snippet entm "expect not_to match" !iw
+expect(${1:a_string}).not_to match ${2:/a_regex/}
+endsnippet
+
+snippet etma "expect to match_array" !iw
+expect(${1:array}).to match_array ${2:array_match}
+endsnippet
+
+snippet entma "expect not_to match_array" !iw
+expect(${1:array}).not_to match_array ${2:array_match}
+endsnippet
+
+snippet etre "expect to raise_error" !iw
+expect(${1:something}).to raise_error ${2:SomeError}
+endsnippet
+
+snippet entre "expect not_to raise_error" !iw
+expect(${1:something}).not_to raise_error ${2:SomeError}
+endsnippet
+
+snippet eti "expect to include - collection" !
+expect(${1:actual}).to include ${2:expected}
+endsnippet
+
+snippet enti "expect not_to include - collection" !
+expect(${1:actual}).not_to include ${2:expected}
+endsnippet
+
+snippet etrt "expect to redirect_to" !b
+expect(${1:response}).to redirect_to ${2:expected_path}
+endsnippet
+
+snippet entrt "expect to redirect_to" !b
+expect(${1:response}).not_to redirect_to ${2:expected_path}
+endsnippet
+
+snippet con "context block" !
+context "${1:title}" do
+  ${2}
+end
+endsnippet
+
+snippet des "Describe"
+describe "${1:subject}" do
+  $0
+end
+endsnippet
+
+snippet bef "before block" !
+before do
+  $0
+end
+endsnippet
+
+snippet befl "before single liner"
+before { $0 }
+endsnippet
+
+snippet letl "let liner"
+let(:${1:symbol}) { $2 }
+endsnippet
+
+snippet let "let liner"
+let(:${1:symbol}) { $2 }
+endsnippet
+
+snippet Let "let liner bang!" !
+let!(:${1:symbol}) { $2 }
+endsnippet
+
+snippet letb "let block"
+let :${1:symbol} do
+  $2
+end
+$0
+endsnippet
+
+snippet it "It"
+it "${1:does something}" do
+  $2
+end
+endsnippet
+
+snippet rsh "require spec_helper" !b
+require 'spec_helper'
+endsnippet

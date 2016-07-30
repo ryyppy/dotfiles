@@ -40,7 +40,7 @@ elif [[ `uname` = 'Linux' ]]; then
     export PATH="$PATH:/opt/node/bin"
 fi
 
-command -v nvim > /dev/null 2>&1 || { alias vim='nvim'; }
+command -v nvim > /dev/null 2>&1 && { alias vim='nvim'; }
 
 #Somehow this needs git
 export GIT_EDITOR=vim

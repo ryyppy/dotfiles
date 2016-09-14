@@ -8,3 +8,9 @@ if [ `id -u` != 0 ]; then
 	exit 1
 fi
 endsnippet
+
+snippet checkExecFun "Template for function checkExec()"
+function checkExec() {
+	command -v $1 > /dev/null 2>&1 || { echo "No ${1} command found, please install curl and rerun this script"; exit 1; }
+}
+endsnippet

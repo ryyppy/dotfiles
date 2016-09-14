@@ -35,12 +35,11 @@ if [[ `uname` = 'Darwin' ]]; then
     export PATH=/usr/local/share/npm/bin:$PATH
     export PATH=~/.scripts:$PATH
     export PATH=/usr/texbin:$PATH
-
 elif [[ `uname` = 'Linux' ]]; then
     export PATH="$PATH:/opt/node/bin"
 fi
 
-command -v nvim > /dev/null 2>&1 && { alias vim='nvim'; }
+command -v nvim > /dev/null 2>&1 && { alias vim='nvim'; alias nvimdiff='nvim -d'; }
 
 #Somehow this needs git
 export GIT_EDITOR=vim
@@ -52,3 +51,6 @@ export GIT_EDITOR=vim
 source $ZSH/oh-my-zsh.sh
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+
+#Fuzzy finder configuration
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

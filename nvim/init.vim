@@ -19,12 +19,16 @@ call dein#add('scrooloose/nerdtree')
 call dein#add('SirVer/ultisnips')
 call dein#add('tpope/vim-fugitive')
 call dein#add('bling/vim-airline')
+call dein#add('flowtype/vim-flow')
+call dein#add('junegunn/fzf', { 'build': './install --all' })
+call dein#add('junegunn/fzf.vim')
 
 call dein#add('pangloss/vim-javascript')
 "call dein#add('othree/yajs.vim')
 call dein#add('moll/vim-node')
 call dein#add('elzr/vim-json')
 call dein#add('mxw/vim-jsx')
+call dein#add('samuelsimoes/vim-jsx-utils')
 
 call dein#add('mephux/bro.vim')
 call dein#add('lambdatoast/elm.vim')
@@ -42,8 +46,7 @@ filetype plugin on
 filetype plugin indent on
 syntax on
 
-set expandtab
-set tabstop=2 shiftwidth=2
+set tabstop=2 shiftwidth=2 expandtab
 set autoindent smartindent nocindent indentexpr=
 set hlsearch
 set splitright
@@ -51,9 +54,9 @@ set splitright
 au FileType python setl sw=4 sts=4 et
 au FileType coffee setl sw=2 sts=2 et
 au FileType elm setl sw=2 sts=2 et
-au Filetype javascript set sw=2 sts=2 et
+au Filetype javascript setl sw=2 sts=2 et
 
-set noet ai cin bs=2 cb=unnamed
+set et ai cin bs=2 cb=unnamed
 set number ruler nowrap autoread showcmd showmode fdm=marker
 
 "Set color scheme
@@ -94,6 +97,10 @@ let g:vim_json_syntax_conceal=0
 " vim-javascript
 let g:javascript_plugin_flow = 1
 
+" fzf plugin
+imap <c-x><c-l> <plug>(fzf-complete-line)
+imap <c-x><c-f> <plug>(fzf-complete-path)
+
 """""""""""""""""""""""""
 " 	DEOPLETE CONFIG
 " - https://gregjs.com/vim/2016/configuring-the-deoplete-asynchronous-keyword-completion-plugin-with-tern-for-vim/ 
@@ -111,7 +118,7 @@ augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+  autocmd FileType javascript setlocal omnifunc=flowcomplete#Complete
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
@@ -129,29 +136,46 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 " deoplete tab-complete
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
-
 """""""""""""""""""""""""
 " 	NEOMAKE CONFIG
 """""""""""""""""""""""""
-let g:eslint_path = StrTrim(system('PATH=$(npm bin):$PATH && which eslint'))
-let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
 
 let g:neomake_open_list = 2
 let g:neomake_place_signs = 1
 
 let g:neomake_javascript_enabled_makers = []
 
-if g:eslint_path != 'eslint not found'
-	let g:neomake_javascript_eslint_exe = g:eslint_path
-	let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'eslint']
+if findfile('.eslintrc', '.;') !=# ''
+  let g:eslint_path = StrTrim(system('PATH=$(npm bin):$PATH && which eslint'))
+  if g:eslint_path != 'eslint not found'
+    let g:neomake_javascript_eslint_exe = g:eslint_path
+    let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'eslint']
+  endif
 endif
 
-if g:flow_path != 'flow not found'
-	let g:neomake_javascript_flow_exe = g:flow_path
-	let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'flow']
-	let g:deoplete#sources#flow#flow_bin = g:flow_path
+if findfile('.flowconfig', '.;') !=# ''
+  let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
+  if g:flow_path != 'flow not found'
+    let g:neomake_javascript_flow_maker = {
+          \ 'exe': 'sh',
+          \ 'args': ['-c', g:flow_path.' --json 2>/dev/null | ~/Projects/flow-vim-quickfix/bin/flow-vim-quickfix'],
+          \ 'errorformat': '%E%f:%l:%c\,%n: %m',
+          \ 'cwd': '%:p:h' 
+          \ }
+    let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'flow']
+    let g:deoplete#sources#flow#flow_bin = g:flow_path
+    
+    let g:flow#flowpath = g:flow_path 
+  endif
 endif
 
-autocmd! BufWritePost * Neomake
+if !empty(g:neomake_javascript_enabled_makers)
+  autocmd! BufWritePost,BufRead * Neomake
+  "autocmd! BufWritePost * Neomake
+  autocmd! QuitPre * let g:neomake_verbose = 0
+endif
 
-"call deoplete#enable_logging("DEBUG", "deoplete.log")
+" vim-flow (for CTRL-Space suggestion only)
+" For flow check we use neomake 
+let g:flow#enable = 0
+let g:flow#omnifunc = 1

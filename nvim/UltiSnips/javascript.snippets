@@ -162,7 +162,8 @@ endsnippet
 # vim:ft=snippets:
 
 snippet flow "@flow meta"
-/* @flow */
+// @flow
+
 endsnippet 
 
 snippet imp "default import" b
@@ -207,3 +208,8 @@ function(){
 	${1://Function code}
 }
 endsnippet
+
+snippet $fee "// $FlowExpectedError" b
+// $FlowExpectedError: ${1:Why?}
+endsnippet
+

@@ -50,7 +50,7 @@ Right now I am transisting to neovim and the original `vimrc` & `vim` directory
 will be obsolete, as soon as I decide to drop vanilla vim.
 
 ```
-brew install nvim
+brew install neovim/neovim/neovim
 brew install python3
 
 # Install python nvim stuff (for remote plugins etc)
@@ -58,9 +58,9 @@ pip3 install neovim
 
 # Install dein plugin manager
 curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-sh installer.sh .config/nvim/dein
+sh installer.sh ~/.config/nvim/dein
 
-# Open init.vim and install the plugins with `dein`
+# Open init.vim and install the plugins with `:call dein#install()`
 nvim ~/.config/nvim/init.vim
 ```
 

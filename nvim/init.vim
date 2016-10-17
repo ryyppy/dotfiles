@@ -50,6 +50,7 @@ set tabstop=2 shiftwidth=2 expandtab
 set autoindent smartindent nocindent indentexpr=
 set hlsearch
 set splitright
+set relativenumber
 
 au FileType python setl sw=4 sts=4 et
 au FileType coffee setl sw=2 sts=2 et
@@ -170,7 +171,7 @@ if findfile('.flowconfig', '.;') !=# ''
 endif
 
 if !empty(g:neomake_javascript_enabled_makers)
-  autocmd! BufWritePost,BufRead * Neomake
+  autocmd! BufWritePost * Neomake
   "autocmd! BufWritePost * Neomake
   autocmd! QuitPre * let g:neomake_verbose = 0
 endif

@@ -2,6 +2,8 @@ if &compatible
   set nocompatible
 endif
 
+set langmenu=en_US.UTF-8
+
 set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 
 call dein#begin(expand('~/.config/nvim/dein'))
@@ -32,6 +34,8 @@ call dein#add('samuelsimoes/vim-jsx-utils')
 
 call dein#add('mephux/bro.vim')
 call dein#add('lambdatoast/elm.vim')
+
+call dein#add('editorconfig/editorconfig-vim')
 
 call dein#end()
 

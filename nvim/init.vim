@@ -8,11 +8,16 @@ set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 
 call dein#begin(expand('~/.config/nvim/dein'))
 
+" Reason / OCaml stuff
+call dein#local("~/.opam/4.02.3/share/merlin/", {}, ["vim"])
+call dein#local("~/.opam/4.02.3/share/reason/editorSupport", {}, ["VimReason"])
+
 call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/deoplete.nvim')
 call dein#add('ryyppy/deoplete-flow')
 call dein#add('neomake/neomake')
 
+call dein#add('danro/rename.vim')
 call dein#add('tpope/vim-surround')
 call dein#add('Valloric/MatchTagAlways')
 call dein#add('tmhedberg/matchit')
@@ -26,6 +31,7 @@ call dein#add('junegunn/fzf', { 'build': './install --all' })
 call dein#add('junegunn/fzf.vim')
 
 call dein#add('pangloss/vim-javascript')
+call dein#add('tpope/vim-jdaddy')
 "call dein#add('othree/yajs.vim')
 call dein#add('moll/vim-node')
 call dein#add('elzr/vim-json')
@@ -131,6 +137,9 @@ augroup end
 " Enable auto-completion by default
 let g:deoplete#enable_at_startup = 1
 
+let g:deoplete#omni_patterns = {}
+"let g:deoplete#omni_patterns.ocaml = '[^. *\t]\.\w*'
+
 if !exists('g:deoplete#omni#input_patterns')
   let g:deoplete#omni#input_patterns = {}
 endif
@@ -141,6 +150,7 @@ autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
 " deoplete tab-complete
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 
+
 """""""""""""""""""""""""
 " 	NEOMAKE CONFIG
 """""""""""""""""""""""""
@@ -150,20 +160,20 @@ let g:neomake_place_signs = 1
 
 let g:neomake_javascript_enabled_makers = []
 
-if findfile('.eslintrc', '.;') !=# ''
-  let g:eslint_path = StrTrim(system('PATH=$(npm bin):$PATH && which eslint'))
-  if g:eslint_path != 'eslint not found'
-    let g:neomake_javascript_eslint_exe = g:eslint_path
-    let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'eslint']
-  endif
-endif
+"if findfile('.eslintrc', '.;') !=# '' || findfile('.eslintrc.js', '.;') !=# ''
+  "let g:eslint_path = StrTrim(system('PATH=$(npm bin):$PATH && which eslint'))
+  "if g:eslint_path != 'eslint not found'
+    "let g:neomake_javascript_eslint_exe = g:eslint_path
+    "let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'eslint']
+  "endif
+"endif
 
 if findfile('.flowconfig', '.;') !=# ''
   let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
   if g:flow_path != 'flow not found'
     let g:neomake_javascript_flow_maker = {
           \ 'exe': 'sh',
-          \ 'args': ['-c', g:flow_path.' --json 2>/dev/null | ~/Projects/flow-vim-quickfix/bin/flow-vim-quickfix'],
+          \ 'args': ['-c', g:flow_path.' --json 2>/dev/null | flow-vim-quickfix'],
           \ 'errorformat': '%E%f:%l:%c\,%n: %m',
           \ 'cwd': '%:p:h' 
           \ }
@@ -174,7 +184,26 @@ if findfile('.flowconfig', '.;') !=# ''
   endif
 endif
 
-if !empty(g:neomake_javascript_enabled_makers)
+"""""""""""""""""""""""""
+" 	REASONML W/ NEOMAKE CONFIG
+"""""""""""""""""""""""""
+let g:neomake_reason_enabled_makers = []
+
+if executable('ocamlmerlin')
+  " To set the log file and restart:
+  let s:ocamlmerlin=substitute(system('which ocamlmerlin'),'ocamlmerlin\n$','','') 
+  execute "set rtp+=" . s:ocamlmerlin . "../share/merlin/vim/"
+  execute "helptags " . s:ocamlmerlin . "../share/merlin/vim/doc/"
+  "let g:syntastic_ocaml_checkers=['merlin']
+endif
+
+"if executable('refmt')
+  "let s:reason=substitute(system('which refmt'),'refmt\n$','','') . "../share/reason/editorSupport/VimReason"
+  "execute "set rtp+=".s:reason
+  ""let g:syntastic_reason_checkers=['merlin']
+"endif
+
+if !empty(g:neomake_javascript_enabled_makers) || !empty(g:neomake_reason_enabled_makers)
   autocmd! BufWritePost * Neomake
   "autocmd! BufWritePost * Neomake
   autocmd! QuitPre * let g:neomake_verbose = 0

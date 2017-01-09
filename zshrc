@@ -26,6 +26,19 @@ gref() {
     grep -rnw $1 -e $2
 }
 
+# Highlight files and copy to clipboard
+# style=monokai for dark bg, style=tango for light bg
+#function hl() {
+  #PYGMENTS_NODE_COMMAND=node pygmentize -f rtf -O style=tango,fontface=Inconsolata,font_size=42 $* | sed 's;\\f0;\\f0\\fs84;g' | tr -d '\n' | sed 's;\\par}$;};' | pbcopy
+#}
+
+#function hljs() {
+  #hl -l jsx $*
+#}
+
+# pbpaste | hljs -> If you highlight js
+# pbpaste | hl -> For everything else
+
 #Load OS specific configurations
 if [[ `uname` = 'Darwin' ]]; then
     #Prevent visual bugs because of german encoding

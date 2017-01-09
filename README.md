@@ -62,6 +62,9 @@ sh installer.sh ~/.config/nvim/dein
 
 # Open init.vim and install the plugins with `:call dein#install()`
 nvim ~/.config/nvim/init.vim
+
+# For flowtype support, also install the flow error message formatter
+npm install -g flow-vim-quickfix
 ```
 
 Local independent configuration files

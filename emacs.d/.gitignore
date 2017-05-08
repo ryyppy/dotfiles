@@ -2,6 +2,8 @@
 .emacs.desktop
 .emacs.desktop.lock
 
+abbrev_defs
+projectile.cache
 projectile-bookmarks.eld
 config.el
 recentf

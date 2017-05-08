@@ -1,0 +1,159 @@
+
+* Config
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package)
+#+END_SRC
+  
+ 
+* Default
+
+** global
+
+#+BEGIN_SRC emacs-lisp
+
+;; enable y/n answers
+(fset 'yes-or-no-p 'y-or-n-p)
+
+#+END_SRC
+
+** backup
+  #+BEGIN_SRC emacs-lisp
+  (setq
+  make-backup-files t
+  version-control t   ; use numbers for backup files
+  kept-new-versions 10
+  kept-old-versions 0
+  delete-old-versions t
+  backup-by-copying t
+  vc-make-backup-files t
+  auto-save-default nil
+  backup-directory-alist '(("." . "~/.emacs.d/backup")))
+  #+END_SRC
+  
+** disable lockfiles
+
+These are the Files creating in the current Directory for files that have not been saved yet #File#
+
+#+BEGIN_SRC emacs-lisp
+(setq create-lockfiles nil)
+#+END_SRC
+
+
+* GUI
+
+** disable menubar
+#+BEGIN_SRC emacs-lisp
+(scroll-bar-mode 0)
+(tool-bar-mode -1)     ; disable the tool-bar
+(menu-bar-mode -1)     ; disable the menu-bar
+(global-linum-mode -1)  ; dont show line-numbers everywhere
+(show-paren-mode)
+(electric-pair-mode 1)
+
+#+END_SRC
+
+** themes
+#+BEGIN_SRC emacs-lisp
+(use-package hamburg-theme
+  :ensure t
+  :config
+  (load-theme 'hamburg t)
+)
+#+END_SRC
+
+* Evil
+** initialize
+#+BEGIN_SRC emacs-lisp
+(use-package evil
+  :ensure t
+  :init
+  (setq-default evil-search-module 'evil-search
+                evil-shift-width 2
+                ;; prevent esc-key from translating to meta-key in terminal mode
+                evil-esc-delay 0
+                evil-want-Y-yank-to-eol t
+                evil-want-C-u-scroll t)
+  (evil-mode t)
+  :config)
+#+END_SRC
+
+* ivy
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+    :ensure t
+    :config
+    ;; regex order 
+    (setq ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
+
+    (define-key ivy-mode-map [escape] 'minibuffer-keyboard-quit)
+    (ivy-mode t))
+
+  (use-package counsel
+    :ensure t
+    :config)
+
+  (use-package swiper
+    :ensure t
+    :config
+    (ivy-mode t))
+
+  (use-package avy
+    :ensure t
+    :config
+
+    (defun avy-line-saving-column ()
+      (interactive)
+      (let ((col (current-column)))
+        (avy-goto-line)
+        (move-to-column col)))
+)
+#+END_SRC
+  
+* company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :config
+  (setq company-idle-delay 0.2
+	company-minimum-prefix-length 2)
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous)
+  (define-key company-active-map (kbd "C-w") #'backward-kill-word)
+  ;(define-key company-active-map [tab] 'my-funcs/expand-snippet-or-complete-selection)
+  ;(define-key company-active-map (kbd "TAB") 'my-funcs/expand-snippet-or-complete-selection)
+  (nconc company-backends '(company-yasnippet))
+  (global-company-mode))
+
+#+END_SRC
+
+* which-key
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))
+#+END_SRC
+
+* Org mode
+
+enable syntax highlighting in org-babel source code
+#+BEGIN_SRC emacs-lisp
+(setq org-src-fontify-natively t) 
+#+END_SRC  
+
+Org indent mode
+#+BEGIN_SRC emacs-lisp
+(org-indent-mode 1)
+#+END_SRC

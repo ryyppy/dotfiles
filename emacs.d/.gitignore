@@ -21,3 +21,6 @@ local/*
 
 backup/*
 !backup/.gitkeep
+
+# Not sure about these ones
+./opam-user-setup.el

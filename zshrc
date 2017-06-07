@@ -47,6 +47,7 @@ if [[ `uname` = 'Darwin' ]]; then
 
 		alias flow='$(npm-which flow)'
 		alias eslint='$(npm-which eslint)'
+		alias prettier='$(npm-which prettier)'
 
     export PATH=/usr/local/share/npm/bin:$PATH
     export PATH=~/.scripts:$PATH
@@ -66,10 +67,5 @@ export GIT_EDITOR=vim
 #Initialize the Oh-My-Zsh framework
 source $ZSH/oh-my-zsh.sh
 
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
 #Fuzzy finder configuration
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-export NVM_DIR="/Users/ps/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm

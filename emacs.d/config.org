@@ -425,6 +425,7 @@ Adds flychecker support for JS + Flow:
 
   ;; Comment related bindings
   (general-define-key :prefix my-backslash-leader
+                      :keymaps '(normal visual)
                       "ci" 'evilnc-comment-or-uncomment-lines
                       "cl" 'evilnc-quick-comment-or-uncomment-to-the-line
                       "ll" 'evilnc-quick-comment-or-uncomment-to-the-line
@@ -433,7 +434,6 @@ Adds flychecker support for JS + Flow:
                       "cr" 'comment-or-uncomment-region
                       "cv" 'evilnc-toggle-invert-comment-line-by-line
                       "."  'evilnc-copy-and-comment-operator)
-
 
   ;; General Emacs bindings without any map / leader
   (general-define-key

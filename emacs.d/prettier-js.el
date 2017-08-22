@@ -54,7 +54,9 @@
   :type 'string
   :group 'prettier-js)
 
-(defcustom prettier-js-args '()
+(defcustom prettier-js-args
+  '("--trailing-comma" "es5"
+    "--single-quote")
   "List of args to send to prettier command."
   :type 'list
   :group 'prettier-js)

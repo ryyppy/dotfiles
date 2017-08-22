@@ -1,3 +1,17 @@
+* Package Config
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (require 'use-package)
+#+END_SRC
+
 * Default
 
 ** global
@@ -47,7 +61,7 @@
   (setq create-lockfiles nil)
    #+END_SRC
 
-   
+
 * Org
 ** org settings
 
@@ -71,6 +85,7 @@
     (global-linum-mode -1)  ; dont show line-numbers everywhere
     (show-paren-mode)
     (electric-pair-mode 1)
+    (setq-default show-trailing-whitespace t)
   #+END_SRC
 
 ** themes
@@ -80,7 +95,10 @@
   :ensure t
   :config
     (load-theme 'hamburg t)
-    (set-face-background 'linum "#27282d"))
+    (set-face-background 'linum "#27282d")
+    (set-cursor-color "#ff69b4")
+    (set-background-color "#000000")
+    (blink-cursor-mode 0))
 #+END_SRC
 
 
@@ -91,13 +109,13 @@
     :ensure t
     :init
     (progn
-      (setq nlinum-format "%3d ")
+      (setq-default nlinum-format "%3d ")
       ))
   (custom-set-variables '(linum-format (quote "%4d")))
   (global-linum-mode 1)
-#+END_SRC   
+#+END_SRC
 
-* rainbow-delimiters 
+* rainbow-delimiters
 
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-delimiters
@@ -218,6 +236,24 @@
   )
 #+END_SRC
 
+* Yasnippet
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    ;(define-key yas-minor-mode-map [tab] nil)
+    ;(define-key yas-minor-mode-map (kbd "TAB") nil)
+
+    ;(define-key yas-keymap [tab] 'my-funcs/tab-complete-or-next-field)
+    ;(define-key yas-keymap (kbd "TAB") 'my-funcs/tab-complete-or-next-field)
+    ;(define-key yas-keymap [(control tab)] 'yas-next-field)
+    ;(define-key yas-keymap (kbd "C-g") 'my-funcs/abort-company-or-yas)
+
+    (setq yas/root-directory (list (concat init-dir "snippets")))
+    (yas-global-mode 1))
+#+End_SRC
+
 * company
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -279,6 +315,17 @@
   (global-set-key (kbd "C-M--") 'default-text-scale-decrease)
 #+END_SRC
 
+* Compile-Mode
+
+#+BEGIN_SRC emacs-lisp
+(require 'ansi-color)
+(defun colorize-compilation-buffer ()
+  (toggle-read-only)
+  (ansi-color-apply-on-region compilation-filter-start (point))
+  (toggle-read-only))
+(add-hook 'compilation-filter-hook 'colorize-compilation-buffer)
+#+END_SRC
+
 
 * Language Support
 
@@ -334,7 +381,7 @@ Adds flychecker support for JS + Flow:
     "Javascript type checking using Flow."
     :command ("flow" "--json" source-original)
     :error-parser flycheck-parse-flow
-    :modes 'flow-jsx-mode 
+    :modes 'js2-mode
     )
   (add-to-list 'flycheck-checkers 'javascript-flow)
 #+END_SRC
@@ -370,7 +417,6 @@ Adds flychecker support for JS + Flow:
   (setq merlin-ac-setup t)
 #+END_SRC
 
-   
 #+BEGIN_SRC emacs-lisp
 (use-package js2-mode
   :ensure t
@@ -390,6 +436,39 @@ Adds flychecker support for JS + Flow:
   (add-to-list 'auto-mode-alist '("\\.jsx\\'" . js2-jsx-mode))
   (add-to-list 'interpreter-mode-alist '("node" . js2-mode)))
 
+#+END_SRC
+
+** Golang
+
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :mode (("\\.go\\'" . go-mode)))
+#+END_SRC
+** PHP
+
+#+BEGIN_SRC emacs-lisp
+  (use-package php-mode
+    :ensure t
+    :mode "\\.php[345]?\\'")
+#+END_SRC
+
+** Yaml
+#+BEGIN_SRC emacs-lisp
+(use-package yaml-mode
+    :ensure t
+    :mode "\\.y[a]?ml\\'")
+#+END_SRC
+
+* Custom Functions
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-funcs/open-snippet-dir ()
+    "Opens snippet dir for current mode."
+    (interactive)
+    (let* ((dir (file-name-as-directory (car yas-snippet-dirs)))
+           (path (concat dir (symbol-name major-mode))))
+      (dired path)))
 #+END_SRC
 
 * General (keybindings)
@@ -419,7 +498,9 @@ Adds flychecker support for JS + Flow:
                       :states '(normal)
                       :prefix my-comma-leader
                       "r" 'prettier-js
-                      "t" 'flow-type-at-pos)
+                      "t" 'flow-type-at-pos
+                      "s" 'flow-status
+                      "e" 'my/npm-test)
 
 
 

@@ -21,13 +21,13 @@
  '(linum-format (quote "%4d"))
  '(package-selected-packages
    (quote
-    (evil-nerd-commenter rainbow-delimiters js2-mode f flycheck default-text-scale general evil-matchit markdown-mode nlinum evil-magit magit reason-mode quelpa package-build rjsx which-key ivy use-package tuareg projectile merlin helm hamburg-theme exec-path-from-shell evil-visual-mark-mode evil-surround company))))
+    (go-mode yaml-mode php-mode yasnippet evil-nerd-commenter rainbow-delimiters js2-mode f flycheck default-text-scale general evil-matchit markdown-mode nlinum evil-magit magit reason-mode quelpa package-build rjsx which-key ivy use-package tuareg projectile merlin helm hamburg-theme exec-path-from-shell evil-visual-mark-mode evil-surround company))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((((class color) (min-colors 89)) (:background "#14151b" :foreground "#acacac")))))
+ '(default ((t (:height 170)))))
 ;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
 (require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line

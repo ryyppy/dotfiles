@@ -72,7 +72,7 @@ ARG is the flow command to run"
   (flow-start)
   (project-compile (format "%s %s; exit 0" flow_binary "status")))
 
-(global-set-key (kbd "C-x C-m") 'flow-status)
+;; (global-set-key (kbd "C-x C-m") 'flow-status)
 
 (defun flow-type-at-pos ()
   "show type"
@@ -93,7 +93,7 @@ ARG is the flow command to run"
     (switch-to-buffer-other-window buffer))
 )
 
-(global-set-key (kbd "C-c C-t") 'flow-type-at-pos)
+;; (global-set-key (kbd "C-c C-t") 'flow-type-at-pos)
 
 (defun flow-suggest ()
   "fill types"
@@ -103,7 +103,7 @@ ARG is the flow command to run"
         (buffer (current-buffer)))
     (switch-to-buffer-other-window "*Shell Command Output*")
     (flow-start)
-    (shell-command
+    (project-shell-command
      (format "%s suggest %s%s"
              flow_binary
              file
@@ -112,7 +112,7 @@ ARG is the flow command to run"
     (switch-to-buffer-other-window buffer))
 )
 
-(global-set-key (kbd "C-t") 'flow-suggest)
+;; (global-set-key (kbd "C-t") 'flow-suggest)
 
 (defun flow-get-def ()
   "jump to definition"
@@ -132,7 +132,7 @@ ARG is the flow command to run"
     (compilation-mode))
 )
 
-(global-set-key (kbd "M-.") 'flow-get-def)
+;; (global-set-key (kbd "M-.") 'flow-get-def)
 
 (defun flow-autocomplete ()
   "autocomplete"
@@ -154,7 +154,7 @@ ARG is the flow command to run"
     (switch-to-buffer-other-window buffer))
 )
 
-(global-set-key (kbd "M-TAB") 'flow-autocomplete)
+;; (global-set-key (kbd "M-TAB") 'flow-autocomplete)
 
 (add-hook 'kill-emacs-hook
   (lambda ()

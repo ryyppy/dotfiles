@@ -97,7 +97,7 @@
     (load-theme 'hamburg t)
     (set-face-background 'linum "#27282d")
     (set-cursor-color "#ff69b4")
-    (set-background-color "#000000")
+    (set-background-color "Black")
     (blink-cursor-mode 0))
 #+END_SRC
 
@@ -260,7 +260,7 @@
     :ensure t
     :config
     (setq company-idle-delay 0.2
-    company-minimum-prefix-length 2)
+    company-minimum-prefix-length 3)
     (define-key company-active-map (kbd "M-n") nil)
     (define-key company-active-map (kbd "M-p") nil)
     (define-key company-active-map (kbd "C-n") #'company-select-next)
@@ -386,6 +386,12 @@ Adds flychecker support for JS + Flow:
   (add-to-list 'flycheck-checkers 'javascript-flow)
 #+END_SRC
 
+** OCaml
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.atd\\'" . tuareg-mode))
+#+END_SRC
+
 ** ReasonML
 
 #+BEGIN_SRC emacs-lisp
@@ -469,6 +475,15 @@ Adds flychecker support for JS + Flow:
     (let* ((dir (file-name-as-directory (car yas-snippet-dirs)))
            (path (concat dir (symbol-name major-mode))))
       (dired path)))
+
+  (defun my-funcs/reload-merlin-command ()
+    "Refreshs the ocamlmerlin path (after opam switch)"
+    (interactive)
+    (let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
+          (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
+      ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
+      (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin")))
+  )
 #+END_SRC
 
 * General (keybindings)
@@ -484,6 +499,12 @@ Adds flychecker support for JS + Flow:
   (setq my-comma-leader ",")
   (setq my-backslash-leader "\\")
 
+
+  ;; Does not work for org mode for some reason
+  ;; But should work for JS etc.
+  (general-evil-define-key 'insert 'text-mode-map
+                      "TAB" 'tab-to-tab-stop)
+
   ;; Reason related bindings
   (general-define-key :keymaps 'reason-mode-map
                       :states '(normal)
@@ -493,6 +514,15 @@ Adds flychecker support for JS + Flow:
                       "u" 'merlin-type-enclosing-go-up
                       "d" 'merlin-type-enclosing-go-down)
 
+  ;; OCaml related bindings
+  (general-define-key :keymaps 'tuareg-mode-map
+                      :states '(normal)
+                      :prefix my-comma-leader
+                      "t" 'merlin-type-enclosing
+                      "u" 'merlin-type-enclosing-go-up
+                      "d" 'merlin-type-enclosing-go-down
+                      "m" 'merlin-switch-to-mli)
+
   ;; JS related bindings
   (general-define-key :keymaps '(js2-mode-map javascript-mode)
                       :states '(normal)
@@ -501,6 +531,7 @@ Adds flychecker support for JS + Flow:
                       "t" 'flow-type-at-pos
                       "s" 'flow-status
                       "e" 'my/npm-test)
+
 
 
 

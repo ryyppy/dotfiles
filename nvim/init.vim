@@ -9,12 +9,13 @@ set runtimepath+=~/.config/nvim/dein/repos/github.com/Shougo/dein.vim
 call dein#begin(expand('~/.config/nvim/dein'))
 
 " Reason / OCaml stuff
-call dein#local("~/.opam/4.02.3/share/merlin/", {}, ["vim"])
-call dein#local("~/.opam/4.02.3/share/reason/editorSupport", {}, ["VimReason"])
+"call dein#local("~/.opam/4.02.3/share/merlin/", {}, ["vim"])
+"call dein#local("~/.opam/4.02.3/share/reason/editorSupport", {}, ["VimReason"])
+call dein#add('reasonml/vim-reason-loader')
 
 call dein#add('Shougo/dein.vim')
 call dein#add('Shougo/deoplete.nvim')
-call dein#add('ryyppy/deoplete-flow')
+"call dein#add('ryyppy/deoplete-flow')
 call dein#add('neomake/neomake')
 
 call dein#add('danro/rename.vim')
@@ -79,6 +80,7 @@ set t_Co=256
 nmap <S-Enter> O<Esc>
 nmap <CR> o<Esc>
 
+
 " Opening and closing braces
 imap <C-F> {<CR>}<C-O>O
 
@@ -129,7 +131,7 @@ augroup omnifuncs
   autocmd!
   autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
   autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-  autocmd FileType javascript setlocal omnifunc=flowcomplete#Complete
+  "autocmd FileType javascript setlocal omnifunc=flowcomplete#Complete
   autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
   autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 augroup end
@@ -171,45 +173,42 @@ let g:neomake_javascript_enabled_makers = []
 if findfile('.flowconfig', '.;') !=# ''
   let g:flow_path = StrTrim(system('PATH=$(npm bin):$PATH && which flow'))
   if g:flow_path != 'flow not found'
-    let g:neomake_javascript_flow_maker = {
-          \ 'exe': 'sh',
-          \ 'args': ['-c', g:flow_path.' --json 2>/dev/null | flow-vim-quickfix'],
-          \ 'errorformat': '%E%f:%l:%c\,%n: %m',
-          \ 'cwd': '%:p:h' 
-          \ }
-    let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'flow']
-    let g:deoplete#sources#flow#flow_bin = g:flow_path
-    
-    let g:flow#flowpath = g:flow_path 
+    "let g:neomake_javascript_flow_maker = {
+          "\ 'exe': 'sh',
+          "\ 'args': ['-c', g:flow_path.' --json 2>/dev/null | flow-vim-quickfix'],
+          "\ 'errorformat': '%E%f:%l:%c\,%n: %m',
+          "\ 'cwd': '%:p:h' 
+          "\ }
+    "let g:neomake_javascript_enabled_makers = g:neomake_javascript_enabled_makers + [ 'flow']
+    "let g:deoplete#sources#flow#flow_bin = g:flow_path
+
+    "let g:flow#flowpath = g:flow_path 
+    nmap ,t :FlowType<CR>
   endif
 endif
 
-"""""""""""""""""""""""""
-" 	REASONML W/ NEOMAKE CONFIG
-"""""""""""""""""""""""""
-let g:neomake_reason_enabled_makers = []
-
-if executable('ocamlmerlin')
-  " To set the log file and restart:
-  let s:ocamlmerlin=substitute(system('which ocamlmerlin'),'ocamlmerlin\n$','','') 
-  execute "set rtp+=" . s:ocamlmerlin . "../share/merlin/vim/"
-  execute "helptags " . s:ocamlmerlin . "../share/merlin/vim/doc/"
-  "let g:syntastic_ocaml_checkers=['merlin']
-endif
-
-"if executable('refmt')
-  "let s:reason=substitute(system('which refmt'),'refmt\n$','','') . "../share/reason/editorSupport/VimReason"
-  "execute "set rtp+=".s:reason
-  ""let g:syntastic_reason_checkers=['merlin']
-"endif
-
-if !empty(g:neomake_javascript_enabled_makers) || !empty(g:neomake_reason_enabled_makers)
-  autocmd! BufWritePost * Neomake
+"if !empty(g:neomake_javascript_enabled_makers)
   "autocmd! BufWritePost * Neomake
-  autocmd! QuitPre * let g:neomake_verbose = 0
-endif
+  ""autocmd! BufWritePost * Neomake
+  "autocmd! QuitPre * let g:neomake_verbose = 0
+"endif
 
 " vim-flow (for CTRL-Space suggestion only)
 " For flow check we use neomake 
-let g:flow#enable = 0
-let g:flow#omnifunc = 1
+"let g:flow#enable = 0
+"let g:flow#omnifunc = 1
+
+" Prettier setup
+let g:prettier_path = StrTrim(system('PATH=$(npm bin):$PATH && which prettier'))
+if g:prettier_path != 'prettier not found'
+  let g:prettier_cmd = fnameescape(g:prettier_path . " --stdin")
+  
+  autocmd FileType javascript execute "set formatprg=".g:prettier_cmd 
+
+  function! RunPrettier()
+    execute "normal gggqG"
+  endfunction
+  nmap ,r :call RunPrettier()<CR>
+
+  "autocmd BufWritePre *.js execute "normal! gggqG\<C-o>\<C-o>"
+endif

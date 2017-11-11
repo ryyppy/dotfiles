@@ -68,4 +68,4 @@ export GIT_EDITOR=vim
 source $ZSH/oh-my-zsh.sh
 
 #Fuzzy finder configuration
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

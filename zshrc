@@ -47,7 +47,6 @@ if [[ `uname` = 'Darwin' ]]; then
 
 		alias flow='$(npm-which flow)'
 		alias eslint='$(npm-which eslint)'
-		alias prettier='$(npm-which prettier)'
 
     export PATH=/usr/local/share/npm/bin:$PATH
     export PATH=~/.scripts:$PATH
@@ -63,6 +62,13 @@ export GIT_EDITOR=vim
 
 #Load local configuration not populated in the dotfiles repo
 [[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+
+#Load the nvm path cache, if it exists
+#This file is created with the custom .bin/cacheNvm script
+NVM_ENV_CACHE=~/.nvm_env_cache
+if [ -f "$NVM_ENV_CACHE" ]; then
+  export PATH=$(cat $NVM_ENV_CACHE):${PATH}
+fi
 
 #Initialize the Oh-My-Zsh framework
 source $ZSH/oh-my-zsh.sh

@@ -28,12 +28,6 @@
   (fset 'yes-or-no-p 'y-or-n-p)
 
   ;; If there is a config.org, load it as a start-page
-  ( let*
-      ((c ".emacs.d/config.org"))
-      (if (file-exists-p c)
-      (setq initial-buffer-choice c)
-      (nil))
-    )
   (setq initial-buffer-choice "~/.emacs.d/config.org")
   (setq-default indent-tabs-mode nil
               tab-width 2)
@@ -95,12 +89,12 @@
   :ensure t
   :config
     (load-theme 'hamburg t)
+    (set-face-attribute 'default nil :height 180)
     (set-face-background 'linum "#27282d")
     (set-cursor-color "#ff69b4")
     (set-background-color "Black")
     (blink-cursor-mode 0))
 #+END_SRC
-
 
 ** line numbers
 
@@ -259,7 +253,7 @@
   (use-package company
     :ensure t
     :config
-    (setq company-idle-delay 0.2
+    (setq company-idle-delay 1
     company-minimum-prefix-length 3)
     (define-key company-active-map (kbd "M-n") nil)
     (define-key company-active-map (kbd "M-p") nil)
@@ -338,7 +332,10 @@
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode))
-  :init (setq markdown-command "multimarkdown"))
+  :init (progn
+      (setq markdown-command "multimarkdown")
+      (setq markdown-gfm-use-electric-backquote nil)
+      ))
 #+END_SRC
 
 ** JavaScript
@@ -348,13 +345,11 @@ JS mode configuration:
 #+BEGIN_SRC emacs-lisp
   ;;(load-file "~/.emacs.d/emacs-flow-jsx-mode.el")
   (load-file "~/.emacs.d/flow.el")
-  (load-file "~/.emacs.d/prettier-js.el")
 #+END_SRC
 
 Adds flychecker support for JS + Flow:
 
 #+BEGIN_SRC emacs-lisp
-  (require 'prettier-js)
   (require 'f)
   (require 'json)
   (require 'flycheck)
@@ -383,42 +378,55 @@ Adds flychecker support for JS + Flow:
     :error-parser flycheck-parse-flow
     :modes 'js2-mode
     )
-  (add-to-list 'flycheck-checkers 'javascript-flow)
+
+  ;; (add-to-list 'flycheck-checkers 'javascript-flow)
+#+END_SRC
+
+Adds prettier:
+
+#+BEGIN_SRC emacs-lisp
+  (use-package prettier-js
+    :ensure t)
 #+END_SRC
 
 ** OCaml
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.atd\\'" . tuareg-mode))
+  (require 'ocamlformat nil 'noerror)
 #+END_SRC
 
 ** ReasonML
 
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'load-path ".emacs.d/reason-mode")
+  (add-to-list 'load-path "~/.emacs.d/reason-mode")
 
-  (defun chomp-end (str)
-    "Chomp tailing whitespace from STR."
-    (replace-regexp-in-string (rx (* (any " \t\n")) eos)
-                              ""
-                              str))
+  (defun shell-cmd (cmd)
+    "Returns the stdout output of a shell command or nil if the command returned
+    an error"
+    (car (ignore-errors (apply 'process-lines (split-string cmd)))))
 
-  (let ((support-base-dir (concat (replace-regexp-in-string "refmt" "" (file-truename (chomp-end (shell-command-to-string "which refmt")))) ".."))
-        (merlin-base-dir (concat (replace-regexp-in-string "ocamlmerlin" "" (file-truename (chomp-end (shell-command-to-string "which ocamlmerlin")))) "..")))
+  (let* ((refmt-bin (or (shell-cmd "refmt ----where")
+                        (shell-cmd "which refmt")))
+        (merlin-bin (or (shell-cmd "ocamlmerlin ----where")
+                        (shell-cmd "which ocamlmerlin")))
+        (merlin-base-dir (when merlin-bin
+                            (replace-regexp-in-string "bin/ocamlmerlin$" "" merlin-bin))))
     ;; Add npm merlin.el to the emacs load path and tell emacs where to find ocamlmerlin
-    (add-to-list 'load-path (concat merlin-base-dir "/share/emacs/site-lisp/"))
-    (setq merlin-command (concat merlin-base-dir "/bin/ocamlmerlin"))
+    (when merlin-bin
+      (add-to-list 'load-path (concat merlin-base-dir "share/emacs/site-lisp/"))
+      (setq merlin-command merlin-bin))
 
-    ;; Add npm reason-mode to the emacs load path and tell emacs where to find refmt
-    (add-to-list 'load-path (concat support-base-dir "/share/emacs/site-lisp"))
-    (setq refmt-command (concat support-base-dir "/bin/refmt")))
+    (when refmt-bin
+      (setq refmt-command refmt-bin)))
+
+  (setq merlin-ac-setup t)
 
   (require 'reason-mode)
   (require 'merlin)
   (add-hook 'reason-mode-hook (lambda ()
-                                ;; (add-hook 'before-save-hook 'refmt-before-save)
+                                ;;(add-hook 'before-save-hook 'refmt-before-save)
                                 (merlin-mode)))
-
 
   (setq merlin-ac-setup t)
 #+END_SRC
@@ -494,7 +502,8 @@ Adds flychecker support for JS + Flow:
     :config
     (general-evil-setup)
     ;; bind a key globally in normal state; keymaps must be quoted
-    (setq general-default-keymaps 'evil-normal-state-map))
+    (setq general-default-keymaps 'evil-normal-state-map)
+    (global-unset-key (kbd "C-h h")))
 
   (setq my-comma-leader ",")
   (setq my-backslash-leader "\\")
@@ -511,6 +520,7 @@ Adds flychecker support for JS + Flow:
                       :prefix my-comma-leader
                       "r" 'refmt
                       "t" 'merlin-type-enclosing
+                      "k" 'merlin-stop-server
                       "u" 'merlin-type-enclosing-go-up
                       "d" 'merlin-type-enclosing-go-down)
 
@@ -518,7 +528,9 @@ Adds flychecker support for JS + Flow:
   (general-define-key :keymaps 'tuareg-mode-map
                       :states '(normal)
                       :prefix my-comma-leader
+                      "r" 'ocamlformat
                       "t" 'merlin-type-enclosing
+                      "k" 'merlin-stop-server
                       "u" 'merlin-type-enclosing-go-up
                       "d" 'merlin-type-enclosing-go-down
                       "m" 'merlin-switch-to-mli)

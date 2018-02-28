@@ -113,12 +113,12 @@
 
 (opam-auto-tools-setup)
 ;; ## end of OPAM user-setup addition for emacs / base ## keep this line
-;; ## added by OPAM user-setup for emacs / ocp-indent ## a5479cbe70fe0791867eb6319de0eb0a ## you can edit, but keep this line
+;; ## added by OPAM user-setup for emacs / ocp-indent ## b75d33b412692eb6e01c7fa2e038e1f9 ## you can edit, but keep this line
 ;; Load ocp-indent from its original switch when not found in current switch
 (when (not (assoc "ocp-indent" opam-tools-installed))
-  (autoload 'ocp-setup-indent "/Users/ryyppy/.opam/4.04.2-api-next/share/emacs/site-lisp/ocp-indent.el" "Improved indentation for Tuareg mode")
-  (autoload 'ocp-indent-caml-mode-setup "/Users/ryyppy/.opam/4.04.2-api-next/share/emacs/site-lisp/ocp-indent.el" "Improved indentation for Caml mode")
+  (autoload 'ocp-setup-indent "/Users/ryyppy/.opam/4.04.2/share/emacs/site-lisp/ocp-indent.el" "Improved indentation for Tuareg mode")
+  (autoload 'ocp-indent-caml-mode-setup "/Users/ryyppy/.opam/4.04.2/share/emacs/site-lisp/ocp-indent.el" "Improved indentation for Caml mode")
   (add-hook 'tuareg-mode-hook 'ocp-setup-indent t)
   (add-hook 'caml-mode-hook 'ocp-indent-caml-mode-setup  t)
-  (setq ocp-indent-path "/Users/ryyppy/.opam/4.04.2-api-next/bin/ocp-indent"))
+  (setq ocp-indent-path "/Users/ryyppy/.opam/4.04.2/bin/ocp-indent"))
 ;; ## end of OPAM user-setup addition for emacs / ocp-indent ## keep this line

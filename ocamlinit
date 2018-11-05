@@ -2,8 +2,6 @@
 #use "topfind";;
 (* ## end of OPAM user-setup addition for ocamltop / base ## keep this line *)
 
-#thread;;
-#camlp4o;;
-#require "core.top";;
-#require "core.syntax";;
-open Core.Std
+#require "compiler-libs";;
+#load "ocamlcommon.cma";;
+

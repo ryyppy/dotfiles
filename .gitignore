@@ -1,8 +1,7 @@
 .netrwhist
 
 vim/bundle/**
-~vim/bundle/vundle
+vim/bundle/vundle
+vim/plugged
 
-nvim/dein/**
-nvim/bundle/**
 nvim/.init.vim-rplugin~

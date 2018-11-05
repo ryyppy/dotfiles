@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+
+import runpy
+from pathlib import Path
+home = str(Path.home())
+runpy.run_path(home + '/tools/kitty', run_name='__main__')

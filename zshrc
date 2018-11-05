@@ -60,15 +60,16 @@ command -v nvim > /dev/null 2>&1 && { alias vim='nvim'; alias nvimdiff='nvim -d'
 #Somehow this needs git
 export GIT_EDITOR=vim
 
-#Load local configuration not populated in the dotfiles repo
-[[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
-
 #Load the nvm path cache, if it exists
 #This file is created with the custom .bin/cacheNvm script
 NVM_ENV_CACHE=~/.nvm_env_cache
 if [ -f "$NVM_ENV_CACHE" ]; then
   export PATH=$(cat $NVM_ENV_CACHE):${PATH}
 fi
+
+#Load local configuration not populated in the dotfiles repo
+[[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
+
 
 #Initialize the Oh-My-Zsh framework
 source $ZSH/oh-my-zsh.sh

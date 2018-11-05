@@ -8,6 +8,7 @@
 
 (require 'org)
 (require 'ob-tangle)
+
 (setq init-dir (file-name-directory (or load-file-name (buffer-file-name))))
 (org-babel-load-file (expand-file-name "config.org" init-dir))
 (custom-set-variables
@@ -21,10 +22,11 @@
  '(linum-format (quote "%4d"))
  '(package-selected-packages
    (quote
-    (prettier-js go-mode yaml-mode php-mode yasnippet evil-nerd-commenter rainbow-delimiters js2-mode f flycheck default-text-scale general evil-matchit markdown-mode nlinum evil-magit magit quelpa package-build rjsx which-key ivy use-package tuareg projectile merlin helm hamburg-theme exec-path-from-shell evil-visual-mark-mode evil-surround company))))
-;; ## added by OPAM user-setup for emacs / base ## 56ab50dc8996d2bb95e7856a6eddb17b ## you can edit, but keep this line
-(require 'opam-user-setup "~/.emacs.d/opam-user-setup.el")
-;; ## end of OPAM user-setup addition for emacs / base ## keep this line
+    (prettier-js go-mode yaml-mode php-mode yasnippet evil-nerd-commenter rainbow-delimiters js2-mode f flycheck default-text-scale general evil-matchit markdown-mode nlinum evil-magit magit quelpa package-build rjsx which-key ivy use-package tuareg projectile merlin helm hamburg-theme exec-path-from-shell evil-visual-mark-mode evil-surround company)))
+ '(safe-local-variable-values
+   (quote
+    ((cider-refresh-after-fn . "server.repl/post-refresh")
+     (cider-refresh-before-fn . "server.repl/pre-refresh")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

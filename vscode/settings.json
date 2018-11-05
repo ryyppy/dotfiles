@@ -1,0 +1,12 @@
+// Place your settings in this file to overwrite the default settings
+{
+    "vim.disableAnnoyingNeovimMessage": true,
+    "window.zoomLevel": 1,
+    "workbench.colorTheme": "GitHub Plus",
+    "reason.codelens.enabled": false,
+    "editor.multiCursorModifier": "alt",
+    "reason.path.ocamlmerlin": "/Users/ryyppy/.nvm/versions/node/v8.9.1/bin/ocamlmerlin",
+    "reason.path.refmt": "/Users/ryyppy/.nvm/versions/node/v8.9.1/bin/refmt",
+    "editor.minimap.enabled": false,
+    "diffEditor.ignoreTrimWhitespace": false
+}

@@ -1,5 +1,6 @@
 .netrwhist
 
+node_modules/
 vim/bundle/**
 vim/bundle/vundle
 vim/plugged

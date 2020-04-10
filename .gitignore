@@ -4,5 +4,6 @@ node_modules/
 vim/bundle/**
 vim/bundle/vundle
 vim/plugged
+nvim/plugged
 
 nvim/.init.vim-rplugin~

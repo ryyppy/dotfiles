@@ -36,18 +36,18 @@ If you are using OSX and want to use the full configuration:
 ```
 brew install tmux
 brew install reattach-to-user-namespace
+
+
+# For node management, install `fnm` (https://github.com/Schniz/fnm)
+brew install Schniz/tap/fnm
 ```
 
 NVIM Setup
 =======
 
-The `nvim` directory contains the whole nvim configuration needed to get
-everything running. Please be aware that `vimrc` and the `vim` directory are not
-related to any neovim configuration and is completely independent from
-eachother.
-
-Right now I am transisting to neovim and the original `vimrc` & `vim` directory
-will be obsolete, as soon as I decide to drop vanilla vim.
+The `nvim` directory contains everything you need to get running (except the
+plugin manager). Make sure to link all directories first, otherwise `.config/nvim`
+doesn't exist yet.
 
 ```
 brew install neovim/neovim/neovim
@@ -56,15 +56,11 @@ brew install python3
 # Install python nvim stuff (for remote plugins etc)
 pip3 install neovim 
 
-# Install dein plugin manager
-curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh
-sh installer.sh ~/.config/nvim/dein
+# Install vim-plug
+curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
-# Open init.vim and install the plugins with `:call dein#install()`
+# Open init.vim and install all the plugins with `:PlugInstall`
 nvim ~/.config/nvim/init.vim
-
-# For flowtype support, also install the flow error message formatter
-npm install -g flow-vim-quickfix
 ```
 
 Local independent configuration files

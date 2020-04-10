@@ -62,10 +62,10 @@ export GIT_EDITOR=vim
 
 #Load the nvm path cache, if it exists
 #This file is created with the custom .bin/cacheNvm script
-NVM_ENV_CACHE=~/.nvm_env_cache
-if [ -f "$NVM_ENV_CACHE" ]; then
-  export PATH=$(cat $NVM_ENV_CACHE):${PATH}
-fi
+#NVM_ENV_CACHE=~/.nvm_env_cache
+#if [ -f "$NVM_ENV_CACHE" ]; then
+  #export PATH=$(cat $NVM_ENV_CACHE):${PATH}
+#fi
 
 #Load local configuration not populated in the dotfiles repo
 [[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
@@ -75,4 +75,14 @@ fi
 source $ZSH/oh-my-zsh.sh
 
 #Fuzzy finder configuration
-#[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+#[[ -f /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh ]] && . /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+#[[ -f /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh
+
+# fnm
+eval "$(fnm env --multi)"

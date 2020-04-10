@@ -8,5 +8,20 @@
     "reason.path.ocamlmerlin": "/Users/ryyppy/.nvm/versions/node/v8.9.1/bin/ocamlmerlin",
     "reason.path.refmt": "/Users/ryyppy/.nvm/versions/node/v8.9.1/bin/refmt",
     "editor.minimap.enabled": false,
-    "diffEditor.ignoreTrimWhitespace": false
+    "diffEditor.ignoreTrimWhitespace": false,
+    "vim.useSystemClipboard": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "css.validate": false,
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "window.title": "${activeEditorMedium}${separator}${rootName}",
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }

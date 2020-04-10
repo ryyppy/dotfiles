@@ -1,0 +1,21 @@
+{
+  "coc": {
+    "preferences": {
+      "previewAutoClose": false
+    }
+  },
+  "languageserver": {
+    "reason": {
+      "command": "~/bin/reason-language-server.exe",
+      "filetypes": ["reason"],
+      "rootPatterns": ["package.json"],
+      "requireRootPattern": true
+    },
+    "ocaml": {
+      "command": "ocamlmerlin-lsp",
+      "rootPatterns": [".use-merlin-lsp"],
+      "filetypes": ["ocaml", "reason"],
+      "requireRootPattern": true
+    }
+  }
+}

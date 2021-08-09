@@ -1,21 +1,32 @@
 {
   "coc": {
     "preferences": {
-      "previewAutoClose": false
+      "previewAutoClose": false,
+      "suggest": {
+        "autoTrigger": "always"
+      }
     }
   },
+  "tailwindCSS.headwind.runOnSave": false,
+  "tailwindCSS.jsLanguages": [ "javascript", "javascriptreact", "reason", "typescriptreact", "rescript"],
   "languageserver": {
-    "reason": {
-      "command": "~/bin/reason-language-server.exe",
-      "filetypes": ["reason"],
-      "rootPatterns": ["package.json"],
-      "requireRootPattern": true
+    "rescript-debug": {
+      "enable": false,
+      "module": "~/.config/nvim/plugged/vim-rescript/server/out/server.js",
+      "filetypes": ["rescript"],
+      "rootPatterns": ["bsconfig.json"]
     },
-    "ocaml": {
-      "command": "ocamlmerlin-lsp",
-      "rootPatterns": [".use-merlin-lsp"],
-      "filetypes": ["ocaml", "reason"],
-      "requireRootPattern": true
+    "rescript": {
+      "enable": true,
+      "module": "~/Projects/rescript-association/vim-rescript/server/out/server.js",
+      "filetypes": ["rescript"],
+      "rootPatterns": ["bsconfig.json"]
+    },
+    "ocaml-lsp": {
+      "enable": false,
+      "command": "opam",
+      "args": ["config", "exec", "--", "ocamllsp"],
+      "filetypes": ["ocaml"]
     }
   }
 }

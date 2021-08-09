@@ -1,0 +1,48 @@
+priority -50
+
+snippet rrmakes "React make function" b
+@react.component
+let make = ($1) => {
+	${2:<div>$3</div>}
+};
+endsnippet
+
+snippet rrcomp "React Module" b
+module ${1:MyComp} = { 
+	@react.component
+	let make = ($2) => {
+		${3:<div>$4</div>}
+	};
+};
+endsnippet
+
+snippet rawt "Raw statement Toplevel" i
+%%raw(\`${1:console.log("some JS code")}\`)
+endsnippet
+
+snippet rawfn "Raw function" b
+let ${1:myfn} = %raw(\`
+	function(${2:param}){
+		return ${3:$2};
+}\`)
+endsnippet
+
+snippet modext "Module external" b
+@module("${1:modulepath}") external ${2:name}: ${3:string} = "${4:$2}";
+endsnippet
+
+snippet sendext "send external"
+@send external ${2:name}: (${3:t}) => ${4:unit} = "${5:$2}";
+endsnippet
+
+snippet objext "obj external"
+@obj external ${2:name}: (${3:~param: string}, unit) => ${4:t} = "";
+endsnippet
+
+snippet valext "Global external" b
+@val external ${1:name}: ${2:string} = "${3:$1}";
+endsnippet
+
+snippet rrstyle "React Inline Style" i
+ReactDOM.Style.make(${1:~param}, ());
+endsnippet

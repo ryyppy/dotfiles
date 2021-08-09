@@ -30,6 +30,9 @@ silent! if plug#begin()
   Plug 'cormacrelf/vim-colors-github'
   Plug 'Alvarocz/vim-fresh'
   Plug 'pbrisbin/vim-colors-off' 
+  Plug 'sonph/onehalf', { 'rtp': 'vim' }
+  Plug 'cocopon/iceberg.vim'
+  Plug 'bluz71/vim-nightfly-guicolors'
 
   Plug 'tpope/vim-fugitive'
   Plug 'scrooloose/nerdcommenter'
@@ -39,7 +42,7 @@ silent! if plug#begin()
 
   Plug 'tpope/vim-surround'
   Plug 'airblade/vim-gitgutter'
-  Plug 'haya14busa/incsearch.vim'
+  "Plug 'haya14busa/incsearch.vim'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   "Plug 'autozimu/LanguageClient-neovim', {
@@ -51,10 +54,16 @@ silent! if plug#begin()
   Plug 'junegunn/fzf.vim'
   "Plug 'andreypopp/fzf-merlin'
 
-  Plug 'w0rp/ale'
+  Plug 'dhruvasagar/vim-markify'
+  Plug '~/Projects/rescript-association/vim-rescript'
+  "Plug 'rescript-lang/vim-rescript', {'tag': 'v2.0.1'}
+  "Plug 'rescript-lang/vim-rescript', {'branch': 'upgrade-vscode-113'}
+  Plug 'jonsmithers/vim-html-template-literals'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
   Plug 'leafgarland/typescript-vim'
+  Plug 'tpope/vim-markdown'
+  Plug 'ap/vim-css-color'
 
   Plug 'vim-scripts/Rename'
   Plug 'sbdchd/neoformat'
@@ -95,29 +104,38 @@ au Filetype javascript setl sw=2 sts=2 et
 
 """"" appearance
 
+set cursorline
 set guioptions-=T
 set guioptions-=r
 
 set termguicolors
+"set background=light
 set background=dark
+
+
+colorscheme nightfly
+"colorscheme iceberg
 
 """" GITHUB THEME START
 "" use a slightly darker background, like GitHub inline code blocks
-"let g:github_colors_soft = 1
+"let g:github_colors_soft = 0
 
 "" more blocky diff markers in signcolumn (e.g. GitGutter)
 "let g:github_colors_block_diffmark = 0
+
+"colorscheme github
 
 "colorscheme github
 "let g:lightline = { 'colorscheme': 'github' }
 
 """" GITHUB THEME END
 
-colorscheme fresh
-
 
 " Make visual selection more visible
-hi Visual  guifg=#000000 guibg=#FFFFFF gui=none
+hi Visual guifg=#000000 guibg=#FFFFFF gui=none
+
+" Prevent column left to line numbers appear to be lightgrey
+highlight SignColumn guibg=NONE 
 
 """" NERDTree
 nnoremap <silent> <leader>f :NERDTreeToggle <Bar> wincmd p<Enter>
@@ -127,6 +145,7 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeMapActivateNode='<Tab>'
+:let g:NERDTreeWinSize=70
 
 """" vimrc shortcuts
 nnoremap <leader><leader> <C-^>
@@ -156,6 +175,13 @@ set hidden
 
 "nnoremap <silent> <localleader>gd :call LanguageClient_textDocument_definition()<cr>
 nnoremap <silent> <localleader>t :call LanguageClient_textDocument_hover()<cr>
+
+"""" Some MISC Stuff
+
+" Autoread when file has changed (useful for bs.js)
+set autoread                                                                                                                                                                                    
+autocmd CursorHold * checktime  
+
 
 
 """" CoC LanguageClient
@@ -202,6 +228,13 @@ nmap <silent> gr <Plug>(coc-references)
 "nnoremap <silent> <localleader>gd :call LanguageClient_textDocument_definition()<cr>
 "nnoremap <silent> <localleader>t :call LanguageClient_textDocument_hover()<cr>
 
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 nnoremap <silent> <localleader>t :call <SID>show_documentation()<CR>
@@ -221,17 +254,18 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 nmap <leader>rn <Plug>(coc-rename)
 
 """"" incsearch
-let g:incsearch#auto_nohlsearch = 1
+set incsearch
+"let g:incsearch#auto_nohlsearch = 1
 
-map /  <Plug>(incsearch-forward)
-map ?  <Plug>(incsearch-backward)
-map g/ <Plug>(incsearch-stay)
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+"map /  <Plug>(incsearch-forward)
+"map ?  <Plug>(incsearch-backward)
+"map g/ <Plug>(incsearch-stay)
+"map n  <Plug>(incsearch-nohl-n)
+"map N  <Plug>(incsearch-nohl-N)
+"map *  <Plug>(incsearch-nohl-*)
+"map #  <Plug>(incsearch-nohl-#)
+"map g* <Plug>(incsearch-nohl-g*)
+"map g# <Plug>(incsearch-nohl-g#)
 
 """"" fzf
 
@@ -266,6 +300,7 @@ let $FZF_DEFAULT_COMMAND = 'ag -l --nocolor
       \ --ignore coverage
       \ --ignore build
       \ --ignore node_modules
+      \ --ignore "**/node_modules"
       \ --ignore site-packages
       \ --ignore "*.egg-info"
       \ --ignore "**/*.pyc"
@@ -284,11 +319,6 @@ if has('nvim') || has('gui_running')
   autocmd  FileType fzf call HideStatusBarWhileInFZF()
 endif
 
-""""" Ale Linter
-
-" Disable all linters... i needed to install this for andrey's ocaml-fzf tool
-let g:ale_linters = {}
-let g:ale_linters_explicit = 1
 
 """"" UltiSnips
 
@@ -321,6 +351,7 @@ let g:neoformat_reason_refmt = {
         \ 'args': ["--interface=" . (expand('%:e') == "rei" ? "true" : "false")],
         \ }
 
+
 let g:neoformat_enabled_reason = ['refmt']
 
 let g:neoformat_ocaml_ocpindent = {
@@ -339,37 +370,56 @@ let g:neoformat_enabled_ocaml = ['ocamlformat', 'ocp-indent']
 " Useful for debugging
 let g:neoformat_verbose = 0
 
-map <localleader>r :Neoformat<CR>
+nnoremap <localleader>r :Neoformat<CR>
+
+" Markdown
+let g:markdown_fenced_languages = ['ts=typescript', 'css', 'javascript', 'js=javascript', 'json=javascript', 'rescript', 'res=rescript' ]
+
+" vim-rescript config
+"-----------------------
+" experimental binary for now
+"let g:rescript_type_hint_bin="/Users/ryyppy/Projects/rescript-association/reason-language-server/bin.exe"
+autocmd FileType rescript nnoremap <silent> <buffer> <localleader>r :RescriptFormat<CR>
+"autocmd FileType rescript nnoremap <silent> <buffer> <localleader>t :RescriptTypeHint<CR>
+autocmd FileType rescript nnoremap <silent> <buffer> <localleader>b :RescriptBuild<CR>
+"autocmd FileType rescript nnoremap <silent> <buffer> gd :RescriptJumpToDefinition<CR>
+
+set omnifunc=rescript#Complete
 
 " ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-"let s:opam_share_dir = system("opam config var share")
-"let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
+let s:opam_share_dir = system("opam config var share")
+let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
 
-"let s:opam_configuration = {}
+let s:opam_configuration = {}
 
-"function! OpamConfOcpIndent()
-  "execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-"endfunction
-"let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
+function! OpamConfOcpIndent()
+  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
+endfunction
+let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
 
-"function! OpamConfOcpIndex()
-  "execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-"endfunction
-"let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
+function! OpamConfOcpIndex()
+  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
+endfunction
+let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
 
-"function! OpamConfMerlin()
-  "let l:dir = s:opam_share_dir . "/merlin/vim"
-  "execute "set rtp+=" . l:dir
-"endfunction
-"let s:opam_configuration['merlin'] = function('OpamConfMerlin')
+function! OpamConfMerlin()
+  let l:dir = s:opam_share_dir . "/merlin/vim"
+  execute "set rtp+=" . l:dir
+endfunction
+let s:opam_configuration['merlin'] = function('OpamConfMerlin')
 
-"let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-"let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-"let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-"for tool in s:opam_packages
-   ""Respect package order (merlin should be after ocp-index)
-  "if count(s:opam_available_tools, tool) > 0
-    "call s:opam_configuration[tool]()
-  "endif
-"endfor
+let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
+let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
+let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
+for tool in s:opam_packages
+  " Respect package order (merlin should be after ocp-index)
+  if count(s:opam_available_tools, tool) > 0
+    call s:opam_configuration[tool]()
+  endif
+endfor
 " ## end of OPAM user-setup addition for vim / base ## keep this line
+" ## added by OPAM user-setup for vim / ocp-indent ## fd71090cf078d304095edd25176603dd ## you can edit, but keep this line
+if count(s:opam_available_tools,"ocp-indent") == 0
+  source "/Users/ryyppy/.opam/4.06.1/share/ocp-indent/vim/indent/ocaml.vim"
+endif
+" ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line

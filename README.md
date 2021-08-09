@@ -86,3 +86,11 @@ OSX Hints
   * https://coderwall.com/p/j9wnfw
 * Tmux + Clipboard
   * http://www.economyofeffort.com/2013/07/29/reattach-to-user-namespace-the-fix-for-your-tmux-in-os-x-woes/
+
+
+**Key Repeat:**
+
+```sh
+defaults write -g InitialKeyRepeat -int 13
+defaults write -g KeyRepeat -int 2
+```

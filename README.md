@@ -28,19 +28,32 @@ sudo xcodebuild -license
 # Install brew -> http://brew.sh/
 ```
 
-OSX Setup
+MacOS Setup
 =======
 
-If you are using OSX and want to use the full configuration:
+If you are using MacOS and want to use the full configuration:
 
 ```
 brew install tmux
 brew install reattach-to-user-namespace
 
+# needed for the `ag` command that is used together with fzf in nvim
+brew install the_silver_searcher
 
-# For node management, install `fnm` (https://github.com/Schniz/fnm)
-brew install Schniz/tap/fnm
+# For node management (https://github.com/Schniz/fnm)
+brew install fnm
 ```
+
+Python Setup
+=======
+
+Make sure to install python correctly with `pyenv` first.
+
+```
+brew install pyenv
+```
+
+After that, follow the pyenv instructions to install a python@3 based environment.
 
 NVIM Setup
 =======
@@ -50,11 +63,10 @@ plugin manager). Make sure to link all directories first, otherwise `.config/nvi
 doesn't exist yet.
 
 ```
-brew install neovim/neovim/neovim
-brew install python3
+brew install neovim
 
-# Install python nvim stuff (for remote plugins etc)
-pip3 install neovim 
+# Requires pyenv to be configured correctly by now!
+pip install pynvim
 
 # Install vim-plug
 curl -fLo ~/.config/nvim/autoload/plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim

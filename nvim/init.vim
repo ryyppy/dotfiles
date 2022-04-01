@@ -15,6 +15,9 @@ filetype on
 filetype plugin on
 filetype plugin indent on
 
+" only use python3 provider
+let g:loaded_python_provider = 0
+
 set langmenu=en_US.UTF-8
 
 """" Fixes some background color issues with vim & tmux
@@ -113,7 +116,10 @@ set termguicolors
 set background=dark
 
 
+" For nightfly, we need to fix up a few colors
 colorscheme nightfly
+hi Conceal guibg=NONE guifg=#a1aab8
+
 "colorscheme iceberg
 
 """" GITHUB THEME START
@@ -126,9 +132,32 @@ colorscheme nightfly
 "colorscheme github
 
 "colorscheme github
-"let g:lightline = { 'colorscheme': 'github' }
+let g:lightline = { 'colorscheme': 'nightfly' }
+let g:lightline = {
+      \ 'component_function': {
+      \   'filename': 'LightlineFilename',
+      \ }
+      \ }
+
+function! LightlineFilename()
+  let root = fnamemodify(get(b:, 'git_dir'), ':h')
+  let path = expand('%:p')
+  if path[:len(root)-1] ==# root
+    return path[len(root)+1:]
+  endif
+  return expand('%')
+endfunction
 
 """" GITHUB THEME END
+
+
+""" OWN COMMANDS
+
+" will copy the filepath of the current file relative to its closest git root
+" to the clipboard buffer
+:command! CopyBufferPath let @+ = LightlineFilename()
+
+""" END OWN COMMANDS
 
 
 " Make visual selection more visible
@@ -145,7 +174,7 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeMapActivateNode='<Tab>'
-:let g:NERDTreeWinSize=70
+let g:NERDTreeWinSize=50
 
 """" vimrc shortcuts
 nnoremap <leader><leader> <C-^>
@@ -154,6 +183,7 @@ nmap <silent> <localleader>sv :so $MYVIMRC<CR>
 nmap <silent> <localleader>eu :UltiSnipsEdit<CR>
 map <silent> <localleader>/ :nohlsearch<CR>
 nmap <silent> <localleader>ntf :NERDTreeFind<CR>
+nmap <silent> <localleader>cbp :CopyBufferPath<CR>
 
 """"" Text editing keymappings
 nmap <S-Enter> O<Esc>
@@ -335,24 +365,24 @@ let g:neoformat_javascript_prettier = {
         \ 'stdin': 1,
         \ }
 
-let g:neoformat_html_prettier = {
-        \ 'exe': 'prettier',
-        \ 'args': ['--stdin', '--parser=html'],
-        \ 'stdin': 1,
-        \ }
+"let g:neoformat_html_prettier = {
+        "\ 'exe': 'prettier',
+        "\ 'args': ['--stdin', '--parser=html'],
+        "\ 'stdin': 1,
+        "\ }
 
-let g:neoformat_enabled_javascript = ['prettier']
+"let g:neoformat_enabled_javascript = ['prettier']
 let g:neoformat_enabled_typescript = ['prettier']
-let g:neoformat_enabled_html = ['prettier']
+"let g:neoformat_enabled_html = ['prettier']
 
-let g:neoformat_reason_refmt = {
-        \ 'exe': 'bsrefmt',
-        \ 'stdin': 1,
-        \ 'args': ["--interface=" . (expand('%:e') == "rei" ? "true" : "false")],
-        \ }
+"let g:neoformat_reason_refmt = {
+        "\ 'exe': 'bsrefmt',
+        "\ 'stdin': 1,
+        "\ 'args': ["--interface=" . (expand('%:e') == "rei" ? "true" : "false")],
+        "\ }
 
 
-let g:neoformat_enabled_reason = ['refmt']
+"let g:neoformat_enabled_reason = ['refmt']
 
 let g:neoformat_ocaml_ocpindent = {
         \ 'exe': 'ocp-indent',
@@ -383,43 +413,6 @@ autocmd FileType rescript nnoremap <silent> <buffer> <localleader>r :RescriptFor
 "autocmd FileType rescript nnoremap <silent> <buffer> <localleader>t :RescriptTypeHint<CR>
 autocmd FileType rescript nnoremap <silent> <buffer> <localleader>b :RescriptBuild<CR>
 "autocmd FileType rescript nnoremap <silent> <buffer> gd :RescriptJumpToDefinition<CR>
+autocmd FileType javascript,javascript.jsx,typescript nnoremap <silent> <buffer> <localleader>r :CocCommand prettier.formatFile<CR>
 
 set omnifunc=rescript#Complete
-
-" ## added by OPAM user-setup for vim / base ## 93ee63e278bdfc07d1139a748ed3fff2 ## you can edit, but keep this line
-let s:opam_share_dir = system("opam config var share")
-let s:opam_share_dir = substitute(s:opam_share_dir, '[\r\n]*$', '', '')
-
-let s:opam_configuration = {}
-
-function! OpamConfOcpIndent()
-  execute "set rtp^=" . s:opam_share_dir . "/ocp-indent/vim"
-endfunction
-let s:opam_configuration['ocp-indent'] = function('OpamConfOcpIndent')
-
-function! OpamConfOcpIndex()
-  execute "set rtp+=" . s:opam_share_dir . "/ocp-index/vim"
-endfunction
-let s:opam_configuration['ocp-index'] = function('OpamConfOcpIndex')
-
-function! OpamConfMerlin()
-  let l:dir = s:opam_share_dir . "/merlin/vim"
-  execute "set rtp+=" . l:dir
-endfunction
-let s:opam_configuration['merlin'] = function('OpamConfMerlin')
-
-let s:opam_packages = ["ocp-indent", "ocp-index", "merlin"]
-let s:opam_check_cmdline = ["opam list --installed --short --safe --color=never"] + s:opam_packages
-let s:opam_available_tools = split(system(join(s:opam_check_cmdline)))
-for tool in s:opam_packages
-  " Respect package order (merlin should be after ocp-index)
-  if count(s:opam_available_tools, tool) > 0
-    call s:opam_configuration[tool]()
-  endif
-endfor
-" ## end of OPAM user-setup addition for vim / base ## keep this line
-" ## added by OPAM user-setup for vim / ocp-indent ## fd71090cf078d304095edd25176603dd ## you can edit, but keep this line
-if count(s:opam_available_tools,"ocp-indent") == 0
-  source "/Users/ryyppy/.opam/4.06.1/share/ocp-indent/vim/indent/ocaml.vim"
-endif
-" ## end of OPAM user-setup addition for vim / ocp-indent ## keep this line

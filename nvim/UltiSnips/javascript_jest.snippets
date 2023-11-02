@@ -1,0 +1,253 @@
+priority -50
+
+## EXPECT
+snippet exp "Jest - expect(value)"
+expect($1)$2;
+endsnippet
+
+snippet ebe "Jest - expect(value).toBe(value)"
+expect($1).toBe($2);
+endsnippet
+
+snippet ecall "Jest - expect(mockFn).toHaveBeenCalled()"
+expect($1).toHaveBeenCalled();
+endsnippet
+
+snippet ecallt "Jest - expect(mockFn).toHaveBeenCalledTimes(number)"
+expect($1).toHaveBeenCalledTimes($2);
+endsnippet
+
+snippet ecallw "Jest - expect(mockFn).toHaveBeenCalledWith(arg1, arg2, ...)"
+expect($1).toHaveBeenCalledWith($2);
+endsnippet
+
+snippet ecloseto "Jest - expect(number).toBeCloseTo(number, numDigits)"
+expect($1).toBeCloseTo($2, $3);
+endsnippet
+
+snippet edef "Jest - expect(value).toBeDefined()"
+expect($1).toBeDefined();
+endsnippet
+
+snippet efalsy "Jest - expect(value).toBeFalsy()"
+expect($1).toBeFalsy();
+endsnippet
+
+snippet egreater "Jest - expect(number).toBeGreaterThan(number)"
+expect($1).toBeGreaterThan($2);
+endsnippet
+
+snippet egreateror "Jest - expect(number).toBeGreaterThanOrEqual(number)"
+expect($1).toBeGreaterThanOrEqual($2);
+endsnippet
+
+snippet eless "Jest - expect(number).toBeLessThan(number)"
+expect($1).toBeLessThan($2);
+endsnippet
+
+snippet elessor "Jest - expect(number).toBeLessThanOrEqual(number)"
+expect($1).toBeLessThanOrEqual($2);
+endsnippet
+
+snippet einst "Jest - expect(obj).toBeInstanceOf(Class)"
+expect($1).toBeInstanceOf($2);
+endsnippet
+
+snippet enull "Jest - expect(value).toBeNull()"
+expect($1).toBeNull();
+endsnippet
+
+snippet etruthy "Jest - expect(value).toBeTruthy()"
+expect($1).toBeTruthy();
+endsnippet
+
+snippet eundef "Jest - expect(value).toBeUndefined()"
+expect($1).toBeUndefined();
+endsnippet
+
+snippet econ "Jest - expect(list).toContain(value)"
+expect($1).toContain($2);
+endsnippet
+
+snippet econeq "Jest - expect(list).toContainEqual(value)"
+expect($1).toContainEqual($2);
+endsnippet
+
+snippet eeq "Jest - expect(value).toEqual(value)"
+expect($1).toEqual($2);
+endsnippet
+
+snippet eleng "Jest - expect(list).toHaveLength(number)"
+expect($1).toHaveLength($2);
+endsnippet
+
+snippet emat "Jest - expect(string).toMatch(regexpOrString)"
+expect($1).toMatch($2);
+endsnippet
+
+snippet ematob "Jest - expect(obj).toMatchObject(obj)"
+expect($1).toMatchObject($2);
+endsnippet
+
+snippet ematsnap "Jest - expect(value).toMatchSnapshot(optionalString)"
+expect($1).toMatchSnapshot($2);
+endsnippet
+
+snippet ethrow "Jest - expect(func).toThrow(error)"
+expect($1).toThrow($2);
+endsnippet
+
+## GLOBALS
+
+snippet jsetup "Jest - Sets up jest test file"
+import $1 from './$1';
+describe('$1', () => {
+	test('$2', () => {
+		$3
+	});
+});
+endsnippet
+
+snippet desc "Jest - describe(name, fn)"
+describe('$1', () => {
+	${VISUAL}$0
+});
+endsnippet
+
+snippet test "Jest - test(name, fn)"
+test('$1', () => {
+	$2
+});
+endsnippet
+
+snippet testasync "Jest - async test(name, fn)"
+test('$1', async () => {
+	$2
+});
+endsnippet
+
+snippet it "Jest - alias for test()"
+it('$1', () => {
+	$2
+});
+endsnippet
+
+snippet aftera "Jest - afterAll(fn)"
+afterAll(() => {
+	$1
+});
+endsnippet
+
+snippet aftere "Jest - afterEach(fn)"
+afterEach(() => {
+	$1
+});
+endsnippet
+
+snippet beforea "Jest - beforeAll(fn)"
+beforeAll(() => {
+	$1
+});
+endsnippet
+
+snippet beforee "Jest - beforeEach(fn)"
+beforeEach(() => {
+	$1
+});
+endsnippet
+
+## MOCK
+
+snippet mclear "Jest - .mockClear()"
+.mockClear();
+endsnippet
+
+snippet mreset "Jest - .mockReset()"
+.mockReset();
+endsnippet
+
+snippet mimpl "Jest - .mockImplementation(fn)"
+.mockImplementation($1);
+endsnippet
+
+snippet mimplonce "Jest - .mockImplementationOnce(fn)"
+.mockImplementationOnce($1);
+endsnippet
+
+snippet mrett "Jest - .mockReturnThis()"
+.mockReturnThis();
+endsnippet
+
+snippet mretval "Jest - .mockReturnValue(value)"
+.mockReturnValue($1);
+endsnippet
+
+snippet mretvalo "Jest - .mockReturnValueOnce(value)"
+.mockReturnValueOnce($1);
+endsnippet
+
+## JEST
+
+snippet jcleartimers "Jest - jest.clearAllTimers()"
+jest.clearAllTimers();
+endsnippet
+
+snippet jdisableautomock "Jest - jest.disableAutomock()"
+jest.disableAutomock();
+endsnippet
+
+snippet jenableautomock "Jest - jest.enableAutomock()"
+jest.enableAutomock();
+endsnippet
+
+snippet jfn "Jest - jest.fn()"
+jest.fn($1);
+endsnippet
+
+snippet jismock "Jest - jest.isMockFunction(fn)"
+jest.isMockFunction($1);
+endsnippet
+
+snippet jgenmock "Jest - jest.genMockFromModule(moduleName)"
+jest.genMockFromModule($1);
+endsnippet
+
+snippet jmock "Jest - jest.mock(moduleName, factory, options)"
+jest.mock($1);
+endsnippet
+
+snippet jresetallmocks "Jest - jest.resetAllMocks()"
+jest.resetAllMocks();
+endsnippet
+
+snippet jresetmodules "Jest - jest.resetModules()"
+jest.resetModules();
+endsnippet
+
+snippet jrunticks "Jest - jest.runAllTicks()"
+jest.runAllTicks();
+endsnippet
+
+snippet jruntimers "Jest - jest.runAllTimers()"
+jest.runAllTimers();
+endsnippet
+
+snippet jrunpendtimers "Jest - jest.runOnlyPendingTimers()"
+jest.runOnlyPendingTimers();
+endsnippet
+
+snippet jsetmock "Jest - jest.setMock(moduleName, moduleExports)"
+jest.setMock($1);
+endsnippet
+
+snippet junmock "Jest - jest.unmock(moduleName)"
+jest.unmock($1);
+endsnippet
+
+snippet jfaketimers "Jest - jest.useFakeTimers()"
+jest.useFakeTimers($1);
+endsnippet
+
+snippet jrealtimers "Jest - jest.useRealTimers()"
+jest.useRealTimers($1);
+endsnippet

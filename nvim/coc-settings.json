@@ -11,6 +11,12 @@
   "tailwindCSS.headwind.runOnSave": false,
   "tailwindCSS.jsLanguages": [ "javascript", "javascriptreact", "reason", "typescriptreact", "rescript"],
   "languageserver": {
+    "graphql": {
+      "enable": true,
+      "command": "graphql-lsp",
+      "args": ["server", "-m", "stream"],
+      "filetypes": ["typescript", "typescriptreact", "graphql"]
+    },
     "rescript-debug": {
       "enable": false,
       "module": "~/.config/nvim/plugged/vim-rescript/server/out/server.js",
@@ -21,13 +27,14 @@
       "enable": true,
       "module": "~/Projects/rescript-association/vim-rescript/server/out/server.js",
       "filetypes": ["rescript"],
-      "rootPatterns": ["bsconfig.json"]
+      "rootPatterns": ["rescript.json"]
     },
-    "ocaml-lsp": {
+    "ocaml": {
       "enable": true,
-      "command": "opam",
-      "args": ["exec", "--", "ocamllsp"],
-      "filetypes": ["ocaml"]
+      "command": "ocamllsp",
+      "filetypes": ["ocaml"],
+      "initializationOptions": {},
+      "settings": {}
     },
     "tailwind-lsp": {
       "command": "tailwindcss-language-server",

@@ -11,6 +11,13 @@ set nocompatible
 
 syntax on
 
+"" Some TypeScript files are large, which causes syntax to break.
+"" This setting will make sure the highlighting will stay consistent.
+syntax sync minlines=10000
+
+" also doing this bc there's still quite some edge-cases with wild JSX files
+autocmd BufEnter,InsertLeave * :syntax sync fromstart
+
 filetype on
 filetype plugin on
 filetype plugin indent on
@@ -35,7 +42,7 @@ silent! if plug#begin()
   Plug 'pbrisbin/vim-colors-off' 
   Plug 'sonph/onehalf', { 'rtp': 'vim' }
   Plug 'cocopon/iceberg.vim'
-  Plug 'bluz71/vim-nightfly-guicolors'
+  Plug 'bluz71/vim-nightfly-colors'
 
   Plug 'tpope/vim-fugitive'
   Plug 'scrooloose/nerdcommenter'
@@ -48,10 +55,6 @@ silent! if plug#begin()
   "Plug 'haya14busa/incsearch.vim'
 
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  "Plug 'autozimu/LanguageClient-neovim', {
-    "\ 'branch': 'next',
-    "\ 'do': 'bash install.sh',
-    "\ }
 
   Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
   Plug 'junegunn/fzf.vim'
@@ -60,28 +63,30 @@ silent! if plug#begin()
   Plug 'dhruvasagar/vim-markify'
   Plug '~/Projects/rescript-association/vim-rescript'
   "Plug 'rescript-lang/vim-rescript', {'tag': 'v2.0.1'}
-  "Plug 'rescript-lang/vim-rescript', {'branch': 'upgrade-vscode-113'}
+  "Plug 'rescript-lang/vim-rescript', {'branch': 'ryyppy/upgrade-vscode-116'}
   Plug 'jonsmithers/vim-html-template-literals'
   Plug 'pangloss/vim-javascript'
   Plug 'mxw/vim-jsx'
   Plug 'leafgarland/typescript-vim'
   Plug 'tpope/vim-markdown'
+  Plug 'jxnblk/vim-mdx-js'
   Plug 'ap/vim-css-color'
 
   Plug 'vim-scripts/Rename'
-  Plug 'sbdchd/neoformat'
   Plug 'reasonml-editor/vim-reason-plus'
   Plug 'SirVer/ultisnips'
+
+  Plug 'pantharshit00/vim-prisma'
+  Plug 'jparise/vim-graphql'
+
+  Plug 'yaegassy/coc-cucumber', {'do': 'yarn install --frozen-lockfile'}
+  Plug 'github/copilot.vim'
 
   call plug#end()
 endif
 
 
 """"" Some basic stuff
-filetype on
-filetype plugin on
-filetype plugin indent on
-syntax on
 
 set tabstop=2 shiftwidth=2 expandtab
 set autoindent smartindent nocindent indentexpr=
@@ -174,7 +179,7 @@ let NERDTreeAutoDeleteBuffer = 1
 let NERDTreeMinimalUI = 1
 let NERDTreeDirArrows = 1
 let NERDTreeMapActivateNode='<Tab>'
-let g:NERDTreeWinSize=50
+let g:NERDTreeWinSize=30
 
 """" vimrc shortcuts
 nnoremap <leader><leader> <C-^>
@@ -185,33 +190,19 @@ map <silent> <localleader>/ :nohlsearch<CR>
 nmap <silent> <localleader>ntf :NERDTreeFind<CR>
 nmap <silent> <localleader>cbp :CopyBufferPath<CR>
 
+nmap <silent> <localleader>cr :CocRestart<CR>
+
 """"" Text editing keymappings
 nmap <S-Enter> O<Esc>
 nmap <CR> o<Esc>
 
-"augroup fmt
-"  autocmd!
-"  au BufWritePre * Neoformat
-"augroup END
-
-""" LanguageClient
-
-" Required for operations modifying multiple buffers like rename.
 set hidden
-"let g:LanguageClient_serverCommands = {
-    "\ 'reason': ['~/bin/reason-language-server.exe'],
-    "\ 'ocaml': ['ocaml-language-server', '--stdio'],
-    "\ }
-
-"nnoremap <silent> <localleader>gd :call LanguageClient_textDocument_definition()<cr>
-nnoremap <silent> <localleader>t :call LanguageClient_textDocument_hover()<cr>
 
 """" Some MISC Stuff
 
 " Autoread when file has changed (useful for bs.js)
 set autoread                                                                                                                                                                                    
 autocmd CursorHold * checktime  
-
 
 
 """" CoC LanguageClient
@@ -255,8 +246,10 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-"nnoremap <silent> <localleader>gd :call LanguageClient_textDocument_definition()<cr>
-"nnoremap <silent> <localleader>t :call LanguageClient_textDocument_hover()<cr>
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
 " Use <c-space> to trigger completion.
 if has('nvim')
@@ -357,50 +350,7 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 let g:UltiSnipsEditSplit="vertical"
 
-""""" Neoformat
-
-let g:neoformat_javascript_prettier = {
-        \ 'exe': 'prettier',
-        \ 'args': ['--stdin', '--parser=typescript'],
-        \ 'stdin': 1,
-        \ }
-
-"let g:neoformat_html_prettier = {
-        "\ 'exe': 'prettier',
-        "\ 'args': ['--stdin', '--parser=html'],
-        "\ 'stdin': 1,
-        "\ }
-
-"let g:neoformat_enabled_javascript = ['prettier']
-let g:neoformat_enabled_typescript = ['prettier']
-"let g:neoformat_enabled_html = ['prettier']
-
-"let g:neoformat_reason_refmt = {
-        "\ 'exe': 'bsrefmt',
-        "\ 'stdin': 1,
-        "\ 'args': ["--interface=" . (expand('%:e') == "rei" ? "true" : "false")],
-        "\ }
-
-
-"let g:neoformat_enabled_reason = ['refmt']
-
-let g:neoformat_ocaml_ocpindent = {
-        \ 'exe': 'ocp-indent',
-        \ 'args': ['--config strict_comments=true'],
-        \ }
-let g:neoformat_ocaml_ocamlformat = {
-        \ 'exe': 'ocamlformat',
-        \ 'args': ['--inplace'],
-        \ 'replace': 1,
-        \ 'stdin': 0,
-        \ }
-
-let g:neoformat_enabled_ocaml = ['ocamlformat', 'ocp-indent']
-
-" Useful for debugging
-let g:neoformat_verbose = 0
-
-nnoremap <localleader>r :Neoformat<CR>
+nnoremap <silent> <localleader>r :CocCommand editor.action.formatDocument<CR>
 
 " Markdown
 let g:markdown_fenced_languages = ['ts=typescript', 'css', 'javascript', 'js=javascript', 'json=javascript', 'rescript', 'res=rescript' ]
@@ -409,10 +359,13 @@ let g:markdown_fenced_languages = ['ts=typescript', 'css', 'javascript', 'js=jav
 "-----------------------
 " experimental binary for now
 "let g:rescript_type_hint_bin="/Users/ryyppy/Projects/rescript-association/reason-language-server/bin.exe"
-autocmd FileType rescript nnoremap <silent> <buffer> <localleader>r :RescriptFormat<CR>
+"autocmd FileType rescript nnoremap <silent> <buffer> <localleader>r :RescriptFormat<CR>
 "autocmd FileType rescript nnoremap <silent> <buffer> <localleader>t :RescriptTypeHint<CR>
 autocmd FileType rescript nnoremap <silent> <buffer> <localleader>b :RescriptBuild<CR>
 "autocmd FileType rescript nnoremap <silent> <buffer> gd :RescriptJumpToDefinition<CR>
-autocmd FileType javascript,javascript.jsx,typescript nnoremap <silent> <buffer> <localleader>r :CocCommand prettier.formatFile<CR>
+"autocmd FileType javascript,javascript.jsx,typescript nnoremap <silent> <buffer> <localleader>r :CocCommand prettier.formatFile<CR>
+
+autocmd FileType prisma nnoremap <silent> <buffer> <localleader>r <nop>
+"autocmd FileType ocaml nnoremap <silent> <buffer> <localleader>r :CocCommand editor.action.formatDocument<CR>
 
 set omnifunc=rescript#Complete

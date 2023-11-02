@@ -1,0 +1,19 @@
+priority -49
+
+snippet cwhen "Cucumber When" b
+When('${1:condition}', async function (this${2::TestWorld}) {
+	$0
+});
+endsnippet
+
+snippet cthen "Cucumber Then" b
+Then('${1:condition}', async function (this${2::TestWorld}) {
+	$0
+});
+endsnippet
+
+snippet cgiven "Cucumber Given" b
+Given('${1:condition}', async function (this${2::TestWorld}) {
+	$0
+});
+endsnippet

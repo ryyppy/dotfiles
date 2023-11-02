@@ -1,0 +1,11 @@
+priority -50
+
+extends typescript
+
+snippet fragT "gql generator FragmentType"
+FragmentType<typeof $1>
+endsnippet
+
+snippet getFragD "gql generator getFragmentData"
+getFragmentData(${1:fragmentDefinition}, ${2:data})
+endsnippet

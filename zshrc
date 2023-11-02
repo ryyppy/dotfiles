@@ -85,4 +85,4 @@ source $ZSH/oh-my-zsh.sh
 #[[ -f /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh ]] && . /Users/ryyppy/.config/yarn/global/node_modules/tabtab/.completions/sls.zsh
 
 # fnm
-eval "$(fnm env --multi)"
+eval "$(fnm env)"

@@ -8,7 +8,6 @@ cd ~
 [[ ! -s ~/.vim ]] && ln -s $DIR/vim ~/.vim
 [[ ! -s ~/.vimrc ]] && ln -s $DIR/vimrc ~/.vimrc
 [[ ! -s ~/.tmux.conf ]] && ln -s $DIR/tmux.conf ~/.tmux.conf
-[[ ! -s ~/.ocamlinit ]] && ln -s $DIR/ocamlinit ~/.ocamlinit
 [[ ! -s ~/.zshrc ]] && ln -s $DIR/zshrc ~/.zshrc
 
 [[ ! -s ~/.config ]] && mkdir ~/.config

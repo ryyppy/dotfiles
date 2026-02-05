@@ -26,6 +26,26 @@ gref() {
     grep -rnw $1 -e $2
 }
 
+# Usage: extract_jira_ticket "branch-name"
+# Will use the current Git branch if no branch name is provided
+extract_jira_ticket() {
+    local branch_name="$1"
+
+    # If no branch name is provided, use the current Git branch
+    if [[ -z "$branch_name" ]]; then
+        branch_name=$(git rev-parse --abbrev-ref HEAD)
+    fi
+
+    # Use Zsh's =~ operator and access the matched parts
+    if [[ $branch_name =~ '([A-Z]+-[0-9]+)(-.*)?' ]]; then
+        echo "$match[1]"
+    else
+        echo "No Jira ticket found in the branch name."
+    fi
+}
+
+
+
 # Highlight files and copy to clipboard
 # style=monokai for dark bg, style=tango for light bg
 #function hl() {

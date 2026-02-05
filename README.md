@@ -4,12 +4,7 @@ My dotfiles commonly used in a UNIX environment.
 
 ## Common Setup
 
-These steps need to be done without considering any target platform:
-
 ```bash
-# Install submodules
-git submodule update --init --recursive
-
 # Link all dotfiles in home-directory
 bash install.sh
 ```
@@ -47,11 +42,7 @@ This setup uses [Starship](https://starship.rs/) as the prompt (replaced oh-my-z
 brew install starship
 ```
 
-The starship config is in `starship.toml` and should be symlinked:
-
-```bash
-ln -s ~/dotfiles/starship.toml ~/.config/starship.toml
-```
+The starship config is in `starship.toml` (symlinked by `install.sh`).
 
 **Shell startup time:** ~120ms
 

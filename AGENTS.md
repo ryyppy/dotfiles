@@ -49,6 +49,5 @@ Using `fnm` for Node.js version management.
 ## Install
 
 ```bash
-git submodule update --init --recursive
 bash install.sh
 ```

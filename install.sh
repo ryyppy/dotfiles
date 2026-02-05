@@ -12,4 +12,5 @@ cd ~
 
 [[ ! -s ~/.config ]] && mkdir ~/.config
 [[ ! -s ~/.config/nvim ]] && ln -s $DIR/nvim ~/.config/nvim
+[[ ! -s ~/.config/nvim-kickstart ]] && ln -s $DIR/nvim-kickstart ~/.config/nvim-kickstart
 [[ ! -s ~/.config/starship.toml ]] && ln -s $DIR/starship.toml ~/.config/starship.toml

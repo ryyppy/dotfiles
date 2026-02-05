@@ -1,0 +1,28 @@
+# Minimal starship config
+add_newline = true
+format = "$directory$git_branch$git_status$character"
+right_format = "$status"
+
+[status]
+disabled = false
+format = "[$status]($style)"
+style = "red"
+
+[directory]
+format = "[$path]($style)"
+style = "bold cyan"
+truncation_length = 4
+truncate_to_repo = true
+
+[git_branch]
+format = " [$symbol$branch]($style)"
+symbol = " "
+style = "purple"
+
+[git_status]
+format = '( [\[$all_status$ahead_behind\]]($style))'
+style = "red"
+
+[character]
+success_symbol = "[ ❯](green)"
+error_symbol = "[ ❯](red)"

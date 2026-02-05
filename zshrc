@@ -1,24 +1,37 @@
-# Path to your oh-my-zsh configuration.
-ZSH=$HOME/.oh-my-zsh
-
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+export CLICOLOR=1
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="gallifrey"
-
-# Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+# Zsh completion (previously handled by oh-my-zsh)
+# Cache completions, only rebuild once per day
+autoload -Uz compinit
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+  compinit
+else
+  compinit -C
+fi
 
 # Unix specific bin paths 
-export PATH=$HOME/.bin:/usr/local/bin:/usr/local/sbin:$PATH
+export PATH=$HOME/dotfiles/bin:/usr/local/bin:/usr/local/sbin:$PATH
 
 ############
 # Some useful aliases
 ############
+
+# Git aliases
+alias g='git'
+alias ga='git add'
+alias gaa='git add --all'
+alias gc='git commit'
+alias gcm='git commit -m'
+alias gco='git checkout'
+alias gd='git diff'
+alias gdca='git diff --cached'
+alias gl='git pull'
+alias gp='git push'
+alias gst='git status'
+alias gb='git branch'
+alias glog='git log --oneline --decorate --graph'
 
 #$1: path to search recursively
 #$2: word to look for 
@@ -90,10 +103,6 @@ export GIT_EDITOR=vim
 #Load local configuration not populated in the dotfiles repo
 [[ -s $HOME/.zshrc.local ]] && source $HOME/.zshrc.local
 
-
-#Initialize the Oh-My-Zsh framework
-source $ZSH/oh-my-zsh.sh
-
 #Fuzzy finder configuration
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -106,3 +115,6 @@ source $ZSH/oh-my-zsh.sh
 
 # fnm
 eval "$(fnm env)"
+
+# Starship prompt
+eval "$(starship init zsh)"

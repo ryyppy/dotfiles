@@ -1,10 +1,12 @@
-plugin
-custom
-spell
-ftplugin
-syntax
-coc-settings.json
+tags
+test.sh
 .luarc.json
+nvim
+
+spell/
+
+# You can uncomment this yourself if you want to lock the lazy-lock.json,
+# but for kickstart, it makes sense to leave it ignored.
 lazy-lock.json
-after
-**/.DS_Store
+
+.DS_Store

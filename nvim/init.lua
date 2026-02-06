@@ -305,7 +305,7 @@ require('lazy').setup({
     event = 'VimEnter',
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
-      delay = 0,
+      delay = 500,
       icons = { mappings = vim.g.have_nerd_font },
 
       -- Document existing key chains
@@ -613,19 +613,23 @@ require('lazy').setup({
         gopls = {},
       }
 
-      -- Ensure the servers and tools above are installed
-      --
-      -- To check the current status of installed tools and/or manually install
-      -- other tools, you can run
-      --    :Mason
-      --
-      -- You can press `g?` for help in this menu.
-      local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        'lua_ls', -- Lua Language server
-        'stylua', -- Used to format Lua code
-        'prettier', -- Formatter
-      })
+      -- Mason package names (different from lspconfig names above)
+      local ensure_installed = {
+        'lua-language-server',
+        'stylua',
+        'prettier',
+        -- Web dev
+        'typescript-language-server',
+        'html-lsp',
+        'css-lsp',
+        'tailwindcss-language-server',
+        'eslint-lsp',
+        'graphql-language-service-cli',
+        'prisma-language-server',
+        -- Other
+        'clangd',
+        'gopls',
+      }
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -687,7 +691,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 300,
             lsp_format = 'fallback',
           }
         end

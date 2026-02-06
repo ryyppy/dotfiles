@@ -305,7 +305,7 @@ require('lazy').setup({
     event = 'VimEnter',
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
-      delay = 500,
+      delay = 300,
       icons = { mappings = vim.g.have_nerd_font },
 
       -- Document existing key chains
@@ -600,7 +600,7 @@ require('lazy').setup({
         tailwindcss = {
           settings = {
             tailwindCSS = {
-              classFunctions = { "tw", "clsx", "cx", "cva", "twMerge" },
+              classFunctions = { 'tw', 'clsx', 'cx', 'cva', 'twMerge' },
             },
           },
         },
@@ -887,7 +887,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.

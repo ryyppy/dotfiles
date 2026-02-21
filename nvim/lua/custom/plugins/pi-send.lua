@@ -35,17 +35,19 @@ return {
         return panes
       end
 
-      local function send_to_pane(pane_id, text)
+      local function send_to_pane(pane_id, text, no_enter)
         -- Use temp file and bracketed paste mode (-p) so newlines aren't interpreted as Enter
         local tmpfile = os.tmpname()
         vim.fn.writefile(vim.split(text, '\n'), tmpfile)
         vim.fn.system(string.format('tmux load-buffer %s', tmpfile))
         vim.fn.system(string.format('tmux paste-buffer -p -t %s', pane_id))
-        vim.fn.system(string.format('tmux send-keys -t %s Enter', pane_id))
+        if not no_enter then
+          vim.fn.system(string.format('tmux send-keys -t %s Enter', pane_id))
+        end
         os.remove(tmpfile)
       end
 
-      local function send_to_pi(text)
+      local function send_to_pi(text, no_enter)
         local panes = get_pi_panes()
 
         if #panes == 0 then
@@ -53,10 +55,12 @@ return {
           return
         end
 
+        local action_word = no_enter and 'Appended to ' or 'Sent to '
+
         if #panes == 1 then
           -- Only one pi session, send directly
-          send_to_pane(panes[1].id, text)
-          vim.notify('Sent to ' .. panes[1].title, vim.log.levels.INFO)
+          send_to_pane(panes[1].id, text, no_enter)
+          vim.notify(action_word .. panes[1].title, vim.log.levels.INFO)
           return
         end
 
@@ -74,22 +78,21 @@ return {
             actions.select_default:replace(function()
               local selection = action_state.get_selected_entry()
               actions.close(prompt_bufnr)
-              send_to_pane(selection.value.id, text)
-              vim.notify('Sent to ' .. selection.value.title, vim.log.levels.INFO)
+              send_to_pane(selection.value.id, text, no_enter)
+              vim.notify(action_word .. selection.value.title, vim.log.levels.INFO)
             end)
             return true
           end,
         }):find()
       end
 
-      -- Get file context (filename, lines, filetype)
+      -- Get file context (filename, lines)
       local function get_file_context(line_start, line_end)
         local filename = vim.fn.expand('%:~')  -- relative to home
-        local filetype = vim.bo.filetype
         if line_start == line_end then
-          return string.format('%s:%d (%s)', filename, line_start, filetype)
+          return string.format('%s:%d', filename, line_start)
         else
-          return string.format('%s:%d-%d (%s)', filename, line_start, line_end, filetype)
+          return string.format('%s:%d-%d', filename, line_start, line_end)
         end
       end
 
@@ -139,6 +142,19 @@ return {
         local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
         send_to_pi(table.concat(lines, '\n'))
       end, { desc = 'Send buffer to pi' })
+
+      -- Append visual selection (no Enter)
+      vim.keymap.set('v', '<leader>pa', function()
+        vim.cmd('normal! "vy')
+        local line_start = vim.fn.line("'<")
+        local line_end = vim.fn.line("'>")
+        local selection = vim.fn.getreg('v')
+        local file_ctx = get_file_context(line_start, line_end)
+        local filetype = vim.bo.filetype
+        -- Leading newlines for nicer formatting when appending
+        local text = '\n\n' .. file_ctx .. '\n```' .. filetype .. '\n' .. selection .. '```'
+        send_to_pi(text, true)
+      end, { desc = 'Append selection to pi input' })
     end,
   },
 }

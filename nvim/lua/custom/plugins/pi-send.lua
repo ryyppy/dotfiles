@@ -128,6 +128,21 @@ return {
         end)
       end, { desc = 'Send selection to pi with prompt' })
 
+      -- Send current line with prompt context
+      vim.keymap.set('n', '<leader>pp', function()
+        local line = vim.api.nvim_get_current_line()
+        local line_nr = vim.fn.line('.')
+        local file_ctx = get_file_context(line_nr, line_nr)
+        local filetype = vim.bo.filetype
+
+        vim.ui.input({ prompt = 'Context: ' }, function(input)
+          if input and input ~= '' then
+            local text = input .. '\n\n' .. file_ctx .. '\n```' .. filetype .. '\n' .. line .. '\n```'
+            send_to_pi(text)
+          end
+        end)
+      end, { desc = 'Send current line to pi with prompt' })
+
       -- Send current line
       vim.keymap.set('n', '<leader>ps', function()
         local line = vim.api.nvim_get_current_line()

@@ -2,6 +2,18 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export CLICOLOR=1
 
+# History
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt EXTENDED_HISTORY
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_VERIFY
+setopt SHARE_HISTORY
+setopt APPEND_HISTORY
+
 # Zsh completion (previously handled by oh-my-zsh)
 # Cache completions, only rebuild once per day
 autoload -Uz compinit

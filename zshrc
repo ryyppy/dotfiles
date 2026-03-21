@@ -2,6 +2,9 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 export CLICOLOR=1
 
+# Force emacs keybindings (prevent vi mode from activating on Escape)
+bindkey -e
+
 # History
 HISTFILE=~/.zsh_history
 HISTSIZE=50000

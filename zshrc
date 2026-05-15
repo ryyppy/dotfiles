@@ -136,3 +136,5 @@ eval "$(starship init zsh)"
 
 # zoxide for quick cd'ing
 eval "$(zoxide init zsh)"
+
+export PATH="$HOME/.local/bin:$PATH"

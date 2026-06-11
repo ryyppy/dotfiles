@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Safe opener for Lazygit's `o` action.
+# - macOS: directories open in Finder; files are revealed in Finder.
+# - Linux: directories open with xdg-open/gio; files open their parent directory.
+# This avoids executing scripts/apps via the OS file association.
+
+if [[ "${1:-}" == "--" ]]; then
+  shift
+fi
+
+path="$*"
+if [[ -z "$path" ]]; then
+  exit 0
+fi
+
+open_dir() {
+  local dir="$1"
+  case "$(uname)" in
+    Darwin)
+      open "$dir"
+      ;;
+    Linux)
+      if command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$dir" >/dev/null 2>&1 &
+      elif command -v gio >/dev/null 2>&1; then
+        gio open "$dir" >/dev/null 2>&1 &
+      else
+        printf 'No opener found: install xdg-open or gio\n' >&2
+        return 1
+      fi
+      ;;
+    *)
+      printf 'Unsupported platform: %s\n' "$(uname)" >&2
+      return 1
+      ;;
+  esac
+}
+
+if [[ "$(uname)" == "Darwin" ]]; then
+  if [[ -d "$path" ]]; then
+    open "$path"
+  elif [[ -e "$path" ]]; then
+    open -R "$path"
+  else
+    parent="$(dirname "$path")"
+    [[ -d "$parent" ]] || parent="."
+    open "$parent"
+  fi
+else
+  if [[ -d "$path" ]]; then
+    open_dir "$path"
+  else
+    parent="$(dirname "$path")"
+    [[ -d "$parent" ]] || parent="."
+    open_dir "$parent"
+  fi
+fi

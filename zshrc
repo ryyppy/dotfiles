@@ -47,6 +47,7 @@ alias gp='git push'
 alias gst='git status'
 alias gb='git branch'
 alias glog='git log --oneline --decorate --graph'
+alias lg='lazygit'
 
 #$1: path to search recursively
 #$2: word to look for 

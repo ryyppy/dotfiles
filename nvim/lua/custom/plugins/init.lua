@@ -6,12 +6,14 @@ return {
   { 'prisma/vim-prisma' },
   {
     'nvim-treesitter/nvim-treesitter-context',
+    dependencies = { 'nvim-treesitter/nvim-treesitter' },
     config = function()
       local ctx = require 'treesitter-context'
       ctx.setup { max_lines = 3 }
 
       vim.keymap.set('n', '<leader>tc', function()
         ctx.toggle()
+        vim.notify('Treesitter context ' .. (ctx.enabled() and 'enabled' or 'disabled'))
       end, { desc = '[T]oggle [C]ontext' })
 
       vim.keymap.set('n', '[c', function()

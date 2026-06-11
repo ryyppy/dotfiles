@@ -635,6 +635,7 @@ require('lazy').setup({
         'lua-language-server',
         'stylua',
         'prettier',
+        'tree-sitter-cli',
         -- Web dev
         'typescript-language-server',
         'html-lsp',
@@ -881,11 +882,89 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
-      require('nvim-treesitter').install(filetypes)
+      local parsers = {
+        'bash',
+        'c',
+        'cpp',
+        'css',
+        'diff',
+        'go',
+        'graphql',
+        'html',
+        'javascript',
+        'jsdoc',
+        'json',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'prisma',
+        'query',
+        'tsx',
+        'typescript',
+        'vim',
+        'vimdoc',
+        'yaml',
+      }
+      local filetypes = {
+        'bash',
+        'c',
+        'cpp',
+        'css',
+        'diff',
+        'go',
+        'graphql',
+        'html',
+        'javascript',
+        'javascriptreact',
+        'json',
+        'jsonc',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'prisma',
+        'query',
+        'sh',
+        'typescript',
+        'typescriptreact',
+        'vim',
+        'vimdoc',
+        'yaml',
+      }
+
+      local mason_bin = vim.fn.stdpath 'data' .. '/mason/bin'
+      if vim.fn.isdirectory(mason_bin) == 1 then
+        vim.env.PATH = mason_bin .. ':' .. vim.env.PATH
+      end
+
+      local treesitter = require 'nvim-treesitter'
+      local installed = {}
+      for _, parser in ipairs(treesitter.get_installed()) do
+        installed[parser] = true
+      end
+
+      local missing = vim.tbl_filter(function(parser)
+        return not installed[parser]
+      end, parsers)
+
+      if #missing > 0 then
+        if vim.fn.executable 'tree-sitter' == 1 then
+          treesitter.install(missing, { summary = true })
+        else
+          vim.notify_once(
+            'Missing tree-sitter CLI; Mason will install tree-sitter-cli. Restart Neovim to install missing parsers: ' .. table.concat(missing, ', '),
+            vim.log.levels.WARN
+          )
+        end
+      end
+
       vim.api.nvim_create_autocmd('FileType', {
         pattern = filetypes,
-        callback = function() vim.treesitter.start() end,
+        callback = function(args)
+          local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+          pcall(vim.treesitter.start, args.buf, lang)
+        end,
       })
     end,
   },

@@ -4,4 +4,19 @@
 -- See the kickstart.nvim README for more information
 return {
   { 'prisma/vim-prisma' },
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    config = function()
+      local ctx = require 'treesitter-context'
+      ctx.setup { max_lines = 3 }
+
+      vim.keymap.set('n', '<leader>tc', function()
+        ctx.toggle()
+      end, { desc = '[T]oggle [C]ontext' })
+
+      vim.keymap.set('n', '[c', function()
+        ctx.go_to_context(vim.v.count1)
+      end, { desc = 'Jump to context' })
+    end,
+  },
 }

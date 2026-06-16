@@ -11,3 +11,40 @@ os:
   # Make Lazygit's `o` action safe: reveal files / open directories in Finder
   # instead of letting macOS execute/open files via arbitrary file associations.
   open: 'lazygit-open -- {{filename}}'
+
+customCommands:
+  - key: 'D'
+    context: 'localBranches'
+    description: 'PR-style diff against origin/main'
+    command: 'git diff origin/main...HEAD | delta'
+    output: terminal
+
+  - key: 'J'
+    context: 'global'
+    description: 'Open Jira ticket from current branch'
+    command: >
+      sh -c 'branch=$(git rev-parse --abbrev-ref HEAD);
+      ticket=$(printf "%s" "$branch" | grep -Eio "[A-Z][A-Z0-9]+-[0-9]+" | head -n1 | tr "[:lower:]" "[:upper:]");
+      if [ -z "$ticket" ]; then
+        echo "No Jira ticket found in branch: $branch";
+        exit 1;
+      fi;
+      base_url="${JIRA_BASE_URL:-https://ketryx.atlassian.net}";
+      url="${base_url%/}/browse/$ticket";
+      if command -v open >/dev/null 2>&1; then open "$url"; else xdg-open "$url"; fi'
+    output: terminal
+
+  - key: 'J'
+    context: 'localBranches'
+    description: 'Open Jira ticket from selected branch'
+    command: >
+      sh -c 'branch="{{.SelectedLocalBranch.Name}}";
+      ticket=$(printf "%s" "$branch" | grep -Eio "[A-Z][A-Z0-9]+-[0-9]+" | head -n1 | tr "[:lower:]" "[:upper:]");
+      if [ -z "$ticket" ]; then
+        echo "No Jira ticket found in branch: $branch";
+        exit 1;
+      fi;
+      base_url="${JIRA_BASE_URL:-https://ketryx.atlassian.net}";
+      url="${base_url%/}/browse/$ticket";
+      if command -v open >/dev/null 2>&1; then open "$url"; else xdg-open "$url"; fi'
+    output: terminal

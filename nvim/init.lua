@@ -417,18 +417,6 @@ require('lazy').setup({
         callback = function(event)
           local buf = event.buf
 
-          -- Find references for the word under your cursor.
-          vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
-
-          -- Jump to the implementation of the word under your cursor.
-          -- Useful when your language has ways of declaring types without an actual implementation.
-          vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = '[G]oto [I]mplementation' })
-
-          -- Jump to the definition of the word under your cursor.
-          -- This is where a variable was first declared, or where a function is defined, etc.
-          -- To jump back, press <C-t>.
-          vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
-
           -- Fuzzy find all the symbols in your current document.
           -- Symbols are things like variables, functions, types, etc.
           vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'Open Document Symbols' })
@@ -437,10 +425,6 @@ require('lazy').setup({
           -- Similar to document symbols, except searches over your entire project.
           vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Open Workspace Symbols' })
 
-          -- Jump to the type of the word under your cursor.
-          -- Useful when you're not sure what type a variable is and you want to see
-          -- the definition of its *type*, not where it was *defined*.
-          vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
         end,
       })
 
@@ -532,6 +516,19 @@ require('lazy').setup({
             vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
           end
 
+          -- Core LSP navigation. Keep both Neovim 0.11-style `gr*` mappings and
+          -- the more common `g*` mappings muscle memory expects.
+          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+          map('grd', vim.lsp.buf.definition, '[G]oto [D]efinition')
+          map('gi', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+          map('gri', vim.lsp.buf.implementation, '[G]oto [I]mplementation')
+          map('gt', vim.lsp.buf.type_definition, '[G]oto [T]ype Definition')
+          map('grt', vim.lsp.buf.type_definition, '[G]oto [T]ype Definition')
+          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          map('grr', vim.lsp.buf.references, '[G]oto [R]eferences')
+
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
           map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
@@ -539,10 +536,6 @@ require('lazy').setup({
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
-
-          -- WARN: This is not Goto Definition, this is Goto Declaration.
-          --  For example, in C this would take you to the header.
-          map('grD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.

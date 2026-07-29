@@ -18,6 +18,8 @@ return {
       window = {
         mappings = {
           ['\\'] = 'close_window',
+          ['/'] = 'noop', -- Preserve Neovim's built-in search in neo-tree buffers.
+          ['#'] = 'fuzzy_finder',
         },
       },
     },

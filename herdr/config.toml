@@ -1,0 +1,16 @@
+[ui.sound]
+enabled = false
+
+[ui]
+show_agent_labels_on_pane_borders = true
+
+agent_panel_sort = "spaces"
+[keys]
+prefix = "ctrl+j"
+
+[[keys.command]]
+key = "prefix+v"
+type = "popup"
+command = "devmux dashboard"
+width = "90%"
+height = "75%"

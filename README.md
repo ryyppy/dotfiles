@@ -44,6 +44,10 @@ brew install starship
 
 The starship config is in `starship.toml` (symlinked by `install.sh`).
 
+## Herdr Setup
+
+The Herdr config is in `herdr/config.toml` and is symlinked to `~/.config/herdr/config.toml` by `install.sh`.
+
 **Shell startup time:** ~120ms
 
 ### Key optimizations:

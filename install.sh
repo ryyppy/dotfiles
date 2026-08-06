@@ -14,6 +14,16 @@ cd ~
 [[ ! -s ~/.config/nvim ]] && ln -s $DIR/nvim ~/.config/nvim
 [[ ! -s ~/.config/starship.toml ]] && ln -s $DIR/starship.toml ~/.config/starship.toml
 
+HERDR_CONFIG_DIR="$HOME/.config/herdr"
+mkdir -p "$HERDR_CONFIG_DIR"
+HERDR_CONFIG="$HERDR_CONFIG_DIR/config.toml"
+if [[ ! -e "$HERDR_CONFIG" ]]; then
+  ln -s "$DIR/herdr/config.toml" "$HERDR_CONFIG"
+elif [[ -f "$HERDR_CONFIG" && ! -L "$HERDR_CONFIG" ]] && cmp -s "$DIR/herdr/config.toml" "$HERDR_CONFIG"; then
+  rm "$HERDR_CONFIG"
+  ln -s "$DIR/herdr/config.toml" "$HERDR_CONFIG"
+fi
+
 if [[ "$(uname)" == "Darwin" ]]; then
   LAZYGIT_CONFIG_DIR="$HOME/Library/Application Support/lazygit"
 else

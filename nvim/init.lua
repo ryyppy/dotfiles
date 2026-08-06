@@ -581,13 +581,94 @@ require('lazy').setup({
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
       local capabilities = require('blink.cmp').get_lsp_capabilities()
+      local typescript = require 'custom.typescript'
+
+      local function package_json_contains(package_json, needle)
+        local ok, lines = pcall(vim.fn.readfile, package_json)
+        return ok and string.find(table.concat(lines, '\n'), '"' .. needle .. '"', 1, true) ~= nil
+      end
+
+      local function find_oxlint_root(bufnr)
+        local filename = vim.api.nvim_buf_get_name(bufnr)
+        local oxlint_config = vim.fs.find({ '.oxlintrc.json', '.oxlintrc.base.json' }, {
+          path = filename,
+          upward = true,
+          type = 'file',
+          limit = 1,
+        })[1]
+
+        if oxlint_config then
+          return vim.fs.dirname(oxlint_config)
+        end
+
+        for _, package_json in ipairs(vim.fs.find('package.json', {
+          path = filename,
+          upward = true,
+          type = 'file',
+        })) do
+          if package_json_contains(package_json, 'oxlint') then
+            return vim.fs.dirname(package_json)
+          end
+        end
+      end
+
+      local function find_eslint_root(bufnr)
+        if find_oxlint_root(bufnr) then
+          return nil
+        end
+
+        local filename = vim.api.nvim_buf_get_name(bufnr)
+        local eslint_config = vim.fs.find({
+          '.eslintrc',
+          '.eslintrc.js',
+          '.eslintrc.cjs',
+          '.eslintrc.yaml',
+          '.eslintrc.yml',
+          '.eslintrc.json',
+          'eslint.config.js',
+          'eslint.config.mjs',
+          'eslint.config.cjs',
+          'eslint.config.ts',
+          'eslint.config.mts',
+          'eslint.config.cts',
+        }, {
+          path = filename,
+          upward = true,
+          type = 'file',
+          limit = 1,
+        })[1]
+
+        if not eslint_config then
+          return nil
+        end
+
+        return vim.fs.root(bufnr, { 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb', 'bun.lock', '.git' }) or vim.fs.dirname(eslint_config)
+      end
+
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
       --  See `:help lsp-config` for information about keys and how to configure
       local servers = {
         -- Web dev
-        ts_ls = {},
+        ts_ls = {
+          init_options = {
+            hostInfo = 'neovim',
+            maxTsServerMemory = 8192,
+          },
+          before_init = function(init_params, config)
+            local tsserver_path = typescript.resolve_tsserver_path(config.root_dir)
+            if not tsserver_path then
+              return
+            end
+
+            local init_options = init_params.initializationOptions or {}
+            init_options.tsserver = vim.tbl_deep_extend('force', init_options.tsserver or {}, {
+              path = tsserver_path,
+            })
+            init_params.initializationOptions = init_options
+          end,
+        },
         html = {},
         cssls = {},
         tailwindcss = {
@@ -597,7 +678,25 @@ require('lazy').setup({
             },
           },
         },
-        eslint = {},
+        oxlint = {
+          -- Prefer the project-local oxlint. This avoids requiring a global install.
+          cmd = { 'pnpm', 'exec', 'oxlint', '--lsp' },
+          root_dir = function(bufnr, on_dir)
+            local root = find_oxlint_root(bufnr)
+            if root then
+              on_dir(root)
+            end
+          end,
+        },
+        eslint = {
+          -- If oxlint is configured for this project/buffer, don't start eslint-lsp.
+          root_dir = function(bufnr, on_dir)
+            local root = find_eslint_root(bufnr)
+            if root then
+              on_dir(root)
+            end
+          end,
+        },
         graphql = {},
         prismals = {},
         ketryx = {

@@ -4,10 +4,13 @@ enabled = false
 
 [ui]
 show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
 
 agent_panel_sort = "spaces"
 [keys]
 prefix = "ctrl+j"
+navigate_workspace_up = "k"
+navigate_workspace_down = "j"
 
 [[keys.command]]
 key = "prefix+v"

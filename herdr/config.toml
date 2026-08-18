@@ -1,3 +1,4 @@
+onboarding = false
 [ui.sound]
 enabled = false
 
@@ -14,3 +15,7 @@ type = "popup"
 command = "devmux dashboard"
 width = "90%"
 height = "75%"
+
+[theme]
+name = "catppuccin"
+auto_switch = false

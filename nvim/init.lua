@@ -583,14 +583,33 @@ require('lazy').setup({
       local capabilities = require('blink.cmp').get_lsp_capabilities()
       local typescript = require 'custom.typescript'
 
+      -- Some language servers request pull-diagnostic refreshes even though
+      -- Neovim currently uses push diagnostics for them. Treat this as a
+      -- harmless no-op so servers like cssls don't surface a MethodNotFound
+      -- error on startup/completion.
+      vim.lsp.handlers['workspace/diagnostic/refresh'] = function()
+        return nil
+      end
+
       local function package_json_contains(package_json, needle)
         local ok, lines = pcall(vim.fn.readfile, package_json)
         return ok and string.find(table.concat(lines, '\n'), '"' .. needle .. '"', 1, true) ~= nil
       end
 
+      local function project_executable(root, executable)
+        if not root then
+          return nil
+        end
+
+        local path = vim.fs.joinpath(root, 'node_modules', '.bin', executable)
+        if vim.fn.executable(path) == 1 then
+          return path
+        end
+      end
+
       local function find_oxlint_root(bufnr)
         local filename = vim.api.nvim_buf_get_name(bufnr)
-        local oxlint_config = vim.fs.find({ '.oxlintrc.json', '.oxlintrc.base.json' }, {
+        local oxlint_config = vim.fs.find({ 'oxlint.json', '.oxlintrc.json', '.oxlintrc.base.json' }, {
           path = filename,
           upward = true,
           type = 'file',
@@ -598,7 +617,10 @@ require('lazy').setup({
         })[1]
 
         if oxlint_config then
-          return vim.fs.dirname(oxlint_config)
+          local root = vim.fs.dirname(oxlint_config)
+          if project_executable(root, 'oxlint') then
+            return root
+          end
         end
 
         for _, package_json in ipairs(vim.fs.find('package.json', {
@@ -606,8 +628,9 @@ require('lazy').setup({
           upward = true,
           type = 'file',
         })) do
-          if package_json_contains(package_json, 'oxlint') then
-            return vim.fs.dirname(package_json)
+          local root = vim.fs.dirname(package_json)
+          if package_json_contains(package_json, 'oxlint') and project_executable(root, 'oxlint') then
+            return root
           end
         end
       end
@@ -645,6 +668,26 @@ require('lazy').setup({
         return vim.fs.root(bufnr, { 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb', 'bun.lock', '.git' }) or vim.fs.dirname(eslint_config)
       end
 
+      local function find_graphql_root(bufnr)
+        return vim.fs.root(bufnr, {
+          '.graphqlrc',
+          '.graphqlrc.json',
+          '.graphqlrc.yaml',
+          '.graphqlrc.yml',
+          '.graphqlrc.js',
+          '.graphqlrc.cjs',
+          '.graphqlrc.ts',
+          '.graphqlrc.toml',
+          'graphql.config.js',
+          'graphql.config.mjs',
+          'graphql.config.cjs',
+          'graphql.config.ts',
+          'graphql.config.json',
+          'graphql.config.yaml',
+          'graphql.config.yml',
+          'graphql.config.toml',
+        })
+      end
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -679,8 +722,12 @@ require('lazy').setup({
           },
         },
         oxlint = {
-          -- Prefer the project-local oxlint. This avoids requiring a global install.
-          cmd = { 'pnpm', 'exec', 'oxlint', '--lsp' },
+          -- Prefer the project-local oxlint. This avoids requiring a global install
+          -- and avoids `pnpm exec` doing install checks before starting the LSP.
+          cmd = function(dispatchers, config)
+            local oxlint = project_executable(config.root_dir, 'oxlint') or 'oxlint'
+            return vim.lsp.rpc.start({ oxlint, '--lsp' }, dispatchers, { cwd = config.root_dir })
+          end,
           root_dir = function(bufnr, on_dir)
             local root = find_oxlint_root(bufnr)
             if root then
@@ -697,7 +744,16 @@ require('lazy').setup({
             end
           end,
         },
-        graphql = {},
+        graphql = {
+          -- Only start GraphQL LSP in projects that actually provide a config;
+          -- otherwise it logs a noisy "only highlighting is enabled" error.
+          root_dir = function(bufnr, on_dir)
+            local root = find_graphql_root(bufnr)
+            if root then
+              on_dir(root)
+            end
+          end,
+        },
         prismals = {},
         ketryx = {
           cmd = { 'ketryx', 'lsp' },

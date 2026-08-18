@@ -7,6 +7,10 @@ show_agent_labels_on_pane_borders = true
 prompt_new_tab_name = false
 
 agent_panel_sort = "spaces"
+
+[ui.sidebar.agents]
+rows = [["state_icon", "workspace", "tab"], ["agent", "state_text"]]
+
 [keys]
 prefix = "ctrl+j"
 navigate_workspace_up = "k"
@@ -18,6 +22,13 @@ type = "popup"
 command = "devmux dashboard"
 width = "90%"
 height = "75%"
+
+[[keys.command]]
+key = "prefix+shift+l"
+type = "popup"
+command = "lazygit"
+width = "80%"
+height = "80%"
 
 [theme]
 name = "catppuccin"

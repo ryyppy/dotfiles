@@ -20,6 +20,7 @@ navigate_workspace_down = "j"
 key = "prefix+v"
 type = "popup"
 command = "devmux dashboard"
+description = "Open devmux dashboard"
 width = "90%"
 height = "75%"
 
@@ -27,9 +28,19 @@ height = "75%"
 key = "prefix+shift+l"
 type = "popup"
 command = "lazygit"
+description = "Open lazygit"
 width = "80%"
 height = "80%"
+
+[[keys.command]]
+key = "prefix+shift+o"
+type = "shell"
+command = "herdr-open-pr"
+description = "Open current branch PR"
 
 [theme]
 name = "catppuccin"
 auto_switch = false
+
+[ui.toast]
+delivery = "herdr"

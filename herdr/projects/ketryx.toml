@@ -1,0 +1,37 @@
+[project]
+repo = "/Users/ryyppy/Projects/work/ketryx"
+worktree_dir = "/Users/ryyppy/Projects/work/ketryx__worktrees"
+agent = "pi"
+
+[files]
+symlink = [
+  "node_modules",
+  "apps/ketryx/.env",
+  "apps/ketryx/data",
+  ".pnpm-store",
+]
+
+[[tabs]]
+name = "dev"
+focus = true
+
+[[tabs.panes]]
+command = '''
+pnpm install && devmux run "ketryx:$(devmux-herdr-name)" -- pnpm exec nx run ketryx:dev -H 0.0.0.0 --no-tui
+'''
+
+[[tabs]]
+name = "agent"
+
+[[tabs.panes]]
+agent = true
+
+[[tabs.panes]]
+command = ""
+split = "right"
+
+[[tabs]]
+name = "shell"
+
+[[tabs.panes]]
+command = ""

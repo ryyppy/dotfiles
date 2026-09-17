@@ -1,0 +1,27 @@
+[project]
+repo = "/Users/ryyppy/Projects/other/minibot"
+worktree_dir = "/Users/ryyppy/Projects/other/minibot__worktrees"
+agent = "pi"
+
+[[tabs]]
+name = "dev"
+focus = true
+
+[[tabs.panes]]
+command = ""
+
+[[tabs]]
+name = "agent"
+
+[[tabs.panes]]
+agent = true
+
+[[tabs.panes]]
+command = ""
+split = "right"
+
+[[tabs]]
+name = "shell"
+
+[[tabs.panes]]
+command = ""

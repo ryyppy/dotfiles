@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+refresh=0
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --refresh)
+      refresh=1
+      shift
+      ;;
+    -h|--help)
+      cat <<'EOF'
+Usage: herdr-copy-pr [--refresh]
+
+Resolve the GitHub pull request for the current branch, copy its URL via OSC52,
+and print it for terminal clients where local browser opening is unavailable.
+EOF
+      exit 0
+      ;;
+    *)
+      echo "unknown argument: $1" >&2
+      exit 2
+      ;;
+  esac
+done
+
+normalize_github_remote() {
+  local remote="$1"
+  local repo=""
+
+  case "$remote" in
+    git@github.com:*) repo="${remote#git@github.com:}" ;;
+    https://github.com/*) repo="${remote#https://github.com/}" ;;
+    ssh://git@github.com/*) repo="${remote#ssh://git@github.com/}" ;;
+    *) return 1 ;;
+  esac
+
+  repo="${repo%.git}"
+  [[ -n "$repo" ]] || return 1
+  printf '%s\n' "$repo"
+}
+
+current_repo_and_branch() {
+  local root branch remote repo
+
+  root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+  [[ -n "$root" ]] || return 1
+
+  branch="$(git -C "$root" branch --show-current 2>/dev/null || true)"
+  [[ -n "$branch" ]] || return 1
+
+  remote="$(git -C "$root" remote get-url origin 2>/dev/null || git -C "$root" remote get-url "$(git -C "$root" remote | head -n 1)" 2>/dev/null || true)"
+  repo="$(normalize_github_remote "$remote" 2>/dev/null || true)"
+  [[ -n "$repo" ]] || return 1
+
+  printf '%s · %s\n' "$repo" "$branch"
+}
+
+wait_to_close() {
+  printf 'Press any key to close...'
+  IFS= read -r -n 1 _ || true
+  printf '\n'
+}
+
+args=(--print)
+if [[ "$refresh" == 1 ]]; then
+  args+=(--refresh)
+fi
+
+if ! output="$(herdr-open-pr "${args[@]}" 2>&1)"; then
+  repo_and_branch="$(current_repo_and_branch || true)"
+  printf '\nCannot copy PR URL\n\n'
+  if [[ -n "$repo_and_branch" ]]; then
+    printf 'No pull request found for %s\n\n' "$repo_and_branch"
+  elif [[ -n "$output" ]]; then
+    printf '%s\n\n' "$output"
+  else
+    printf 'No pull request found for the current branch.\n\n'
+  fi
+  wait_to_close
+  exit 1
+fi
+
+url="$output"
+
+# Copy to the client terminal clipboard via OSC52. This works in Blink over mosh
+# when emitted from a raw Herdr pane/popup, even though ordinary command output
+# captured by Pi tools will not trigger the client clipboard.
+encoded="$(printf '%s' "$url" | base64 | tr -d '\n')"
+printf '\033]52;c;%s\a' "$encoded"
+
+printf '\nCopied PR URL to clipboard via OSC52 if supported.\n\n'
+printf '%s\n\n' "$url"
+wait_to_close

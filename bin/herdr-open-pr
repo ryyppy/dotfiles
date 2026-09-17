@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PATH="/opt/homebrew/bin:/usr/local/bin:/Users/ryyppy/dotfiles/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
+
 print_only=0
 refresh=0
+use_focused=0
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -14,12 +17,19 @@ while [[ $# -gt 0 ]]; do
       refresh=1
       shift
       ;;
+    --focused)
+      use_focused=1
+      shift
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: herdr-open-pr [--print] [--refresh]
+Usage: herdr-open-pr [--print] [--refresh] [--focused]
 
 Open the GitHub pull request associated with the current git branch.
 Uses a small Herdr-owned cache for snappy repeated opens and falls back to gh.
+
+Options:
+  --focused  Resolve the current branch from Herdr's focused pane cwd instead of $PWD.
 EOF
       exit 0
       ;;
@@ -29,6 +39,13 @@ EOF
       ;;
   esac
 done
+
+debug_log() {
+  local message="$1"
+  local log_dir="${HERDR_PR_LOG_DIR:-$HOME/.cache/herdr}"
+  mkdir -p "$log_dir"
+  printf '[%s] %s\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$message" >> "$log_dir/open-pr.log" 2>/dev/null || true
+}
 
 open_url() {
   local url="$1"
@@ -156,6 +173,30 @@ else:
 PY
 }
 
+focused_pane_cwd() {
+  command -v herdr >/dev/null 2>&1 || return 1
+
+  herdr api snapshot 2>/dev/null | python3 -c '
+import json
+import sys
+
+try:
+    snapshot = json.load(sys.stdin)["result"]["snapshot"]
+except Exception:
+    raise SystemExit(1)
+
+focused_pane_id = snapshot.get("focused_pane_id")
+for pane in snapshot.get("panes", []):
+    if pane.get("pane_id") == focused_pane_id:
+        cwd = pane.get("foreground_cwd") or pane.get("cwd")
+        if cwd:
+            print(cwd)
+            raise SystemExit(0)
+
+raise SystemExit(1)
+'
+}
+
 cache_put() {
   local cache="$1"
   local key="$2"
@@ -206,14 +247,28 @@ PY
   mv "$tmp" "$cache"
 }
 
+debug_log "start print=$print_only refresh=$refresh focused=$use_focused pwd=$PWD PATH=$PATH git=$(command -v git || true) gh=$(command -v gh || true) herdr=$(command -v herdr || true) python3=$(command -v python3 || true) HERDR_WORKSPACE_ID=${HERDR_WORKSPACE_ID:-} HERDR_TAB_ID=${HERDR_TAB_ID:-} HERDR_PANE_ID=${HERDR_PANE_ID:-}"
+
+if [[ "$use_focused" == 1 ]]; then
+  focused_cwd="$(focused_pane_cwd || true)"
+  debug_log "focused_cwd=${focused_cwd:-<none>}"
+  if [[ -n "$focused_cwd" ]]; then
+    cd "$focused_cwd"
+  fi
+fi
+
 root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
 if [[ -z "$root" ]]; then
+  debug_log "error root_not_found pwd=$PWD"
+  notify_herdr "Can't open PR" "Not inside a git repository"
   echo 'herdr-open-pr: not inside a git repository' >&2
   exit 1
 fi
 
 branch="$(git -C "$root" branch --show-current 2>/dev/null || true)"
 if [[ -z "$branch" ]]; then
+  debug_log "error branch_not_found root=$root"
+  notify_herdr "Can't open PR" "Current checkout is not on a branch"
   echo 'herdr-open-pr: current checkout is not on a branch' >&2
   exit 1
 fi
@@ -221,16 +276,20 @@ fi
 remote="$(git -C "$root" remote get-url origin 2>/dev/null || git -C "$root" remote get-url "$(git -C "$root" remote | head -n 1)" 2>/dev/null || true)"
 repo="$(normalize_github_remote "$remote" 2>/dev/null || true)"
 if [[ -z "$repo" ]]; then
+  debug_log "error repo_parse_failed remote=$remote root=$root branch=$branch"
+  notify_herdr "Can't open PR" "Could not parse GitHub remote: $remote"
   echo "herdr-open-pr: could not parse GitHub remote: $remote" >&2
   exit 1
 fi
 
 cache="${HERDR_PR_CACHE:-$HOME/.cache/herdr/prs.json}"
 key="$repo|$branch"
+debug_log "resolved root=$root branch=$branch repo=$repo key=$key"
 
 if [[ "$refresh" == 0 ]]; then
   cached_pr_json="$(cache_get "$cache" "$key" || true)"
   if [[ -n "$cached_pr_json" ]]; then
+    debug_log "cache hit key=$key"
     cached_url="$(pr_url "$cached_pr_json")"
     cached_number="$(pr_number "$cached_pr_json" || true)"
     if [[ -n "$cached_number" ]]; then
@@ -247,15 +306,17 @@ list_json="$(gh pr list --repo "$repo" --head "$branch" --state all --json numbe
 if [[ -n "$list_json" ]]; then
   pr_json="$(select_pr "$list_json" || true)"
 fi
+debug_log "gh list branch=$branch matched=$([[ -n "$pr_json" ]] && echo yes || echo no)"
 
 # Fallback to gh's current-branch PR resolution for cases where --head is not
 # enough, such as fork/head-owner edge cases.
 if [[ -z "$pr_json" ]]; then
-  view_json="$(gh pr view --repo "$repo" --json number,title,url,state 2>/dev/null || true)"
+  view_json="$(gh pr view "$branch" --repo "$repo" --json number,title,url,state,updatedAt 2>/dev/null || true)"
   if [[ -n "$view_json" ]]; then
     pr_json="$(select_pr "$view_json" || true)"
   fi
 fi
+debug_log "gh view fallback matched=$([[ -n "$pr_json" ]] && echo yes || echo no)"
 
 if [[ -z "$pr_json" ]]; then
   notify_herdr "Can't open PR" "No pull request found for $repo · $branch"

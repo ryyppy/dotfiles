@@ -5,11 +5,14 @@ agent = "pi"
 
 [files]
 symlink = [
-  "node_modules",
   "apps/ketryx/.env",
   "apps/ketryx/data",
-  ".pnpm-store",
+  ".env.worktree",
+  ".envrc"
 ]
+
+[direnv]
+allow = true
 
 [[tabs]]
 name = "dev"

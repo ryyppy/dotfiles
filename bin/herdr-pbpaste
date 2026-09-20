@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export PATH="/Users/ryyppy/.local/bin:/opt/homebrew/bin:/usr/local/bin:/Users/ryyppy/dotfiles/bin:/usr/bin:/bin:/usr/sbin:/sbin:${PATH:-}"
+
+notify_herdr() {
+  local title="$1"
+  local body="${2:-}"
+
+  command -v herdr >/dev/null 2>&1 || return 0
+  herdr notification show "$title" --body "$body" --position bottom-right --sound none >/dev/null 2>&1 || true
+}
+
+focused_pane_id() {
+  herdr api snapshot 2>/dev/null | python3 -c '
+import json
+import sys
+
+try:
+    snapshot = json.load(sys.stdin)["result"]["snapshot"]
+except Exception:
+    raise SystemExit(1)
+
+pane_id = snapshot.get("focused_pane_id")
+if pane_id:
+    print(pane_id)
+    raise SystemExit(0)
+
+raise SystemExit(1)
+'
+}
+
+if ! command -v pbpaste >/dev/null 2>&1; then
+  notify_herdr "Can't paste clipboard" "pbpaste is not available"
+  exit 1
+fi
+
+if ! command -v herdr >/dev/null 2>&1; then
+  exit 1
+fi
+
+text="$(pbpaste)"
+if [[ -z "$text" ]]; then
+  notify_herdr "Clipboard is empty" "Nothing to paste"
+  exit 0
+fi
+
+pane_id="$(focused_pane_id || true)"
+if [[ -z "$pane_id" ]]; then
+  notify_herdr "Can't paste clipboard" "No focused Herdr pane found"
+  exit 1
+fi
+
+herdr pane send-text "$pane_id" "$text"

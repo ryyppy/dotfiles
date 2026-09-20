@@ -26,6 +26,12 @@ width = "90%"
 height = "75%"
 
 [[keys.command]]
+key = "prefix+shift+v"
+type = "shell"
+command = "herdr-pbpaste"
+description = "Paste macOS clipboard into focused pane"
+
+[[keys.command]]
 key = "prefix+shift+l"
 type = "popup"
 command = "lazygit"

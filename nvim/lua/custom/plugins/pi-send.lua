@@ -34,10 +34,60 @@ return {
         return true, result.stdout or ''
       end
 
+      local function get_herdr_snapshot()
+        local ok, output = run { 'herdr', 'api', 'snapshot' }
+        if not ok then
+          return nil
+        end
+
+        local decoded_ok, decoded = pcall(vim.json.decode, output)
+        if not decoded_ok then
+          return nil
+        end
+
+        return vim.tbl_get(decoded, 'result', 'snapshot')
+      end
+
+      local function get_herdr_tab_order(snapshot)
+        local tab_order = {}
+        local workspace_tab_counts = {}
+
+        for _, tab in ipairs((snapshot and snapshot.tabs) or {}) do
+          local workspace_id = tab.workspace_id
+          local tab_id = tab.tab_id
+          if workspace_id and tab_id then
+            workspace_tab_counts[workspace_id] = (workspace_tab_counts[workspace_id] or 0) + 1
+            tab_order[tab_id] = workspace_tab_counts[workspace_id]
+          end
+        end
+
+        return tab_order
+      end
+
+      local function sort_herdr_targets(targets)
+        local current_workspace_id = vim.env.HERDR_WORKSPACE_ID
+        table.sort(targets, function(a, b)
+          local a_same_workspace = current_workspace_id ~= nil and a.workspace_id == current_workspace_id
+          local b_same_workspace = current_workspace_id ~= nil and b.workspace_id == current_workspace_id
+          if a_same_workspace ~= b_same_workspace then
+            return a_same_workspace
+          end
+
+          if a.workspace_id == b.workspace_id and a.tab_order ~= b.tab_order then
+            return (a.tab_order or math.huge) < (b.tab_order or math.huge)
+          end
+
+          return a.display < b.display
+        end)
+      end
+
       local function get_herdr_pi_agents()
         if not has_herdr() then
           return {}
         end
+
+        local snapshot = get_herdr_snapshot()
+        local tab_order = get_herdr_tab_order(snapshot)
 
         local ok, output = run { 'herdr', 'agent', 'list' }
         if not ok then
@@ -61,6 +111,9 @@ return {
             table.insert(targets, {
               backend = 'herdr',
               id = agent.pane_id,
+              workspace_id = agent.workspace_id,
+              tab_id = agent.tab_id,
+              tab_order = tab_order[agent.tab_id],
               path = path,
               title = title,
               status = status,
@@ -69,6 +122,7 @@ return {
           end
         end
 
+        sort_herdr_targets(targets)
         return targets
       end
 

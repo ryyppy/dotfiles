@@ -7,8 +7,10 @@ agent = "pi"
 symlink = [
   "apps/ketryx/.env",
   "apps/ketryx/data",
-  ".env.worktree",
   ".envrc"
+]
+copy = [
+  ".env.worktree"
 ]
 
 [direnv]

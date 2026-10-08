@@ -16,10 +16,6 @@ name = "agent"
 [[tabs.panes]]
 agent = true
 
-[[tabs.panes]]
-command = ""
-split = "right"
-
 [[tabs]]
 name = "shell"
 

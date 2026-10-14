@@ -189,6 +189,18 @@ vim.diagnostic.config {
 
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
+-- Copy visual selections to the terminal clipboard via OSC52.
+-- This is useful from remote shells / Blink where the system clipboard provider is unavailable.
+vim.keymap.set('x', '<leader>y', function()
+  local previous_register = vim.fn.getreg 'z'
+  local previous_register_type = vim.fn.getregtype 'z'
+
+  vim.cmd 'normal! "zy'
+  require('vim.ui.clipboard.osc52').copy '+'(vim.fn.getreg('z', 1, true))
+  vim.fn.setreg('z', previous_register, previous_register_type)
+  vim.notify 'Copied selection via OSC52'
+end, { desc = '[Y]ank selection via OSC52', silent = true })
+
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
 -- is not what someone will guess without a bit more experience.

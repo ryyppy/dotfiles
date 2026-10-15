@@ -22,7 +22,7 @@ focus = true
 
 [[tabs.panes]]
 command = '''
-pnpm install && devmux run "ketryx:$(devmux-herdr-name)" -- pnpm exec nx run ketryx:dev -H 0.0.0.0 --no-tui
+pnpm install && devmux run "$(devmux-herdr-name)" -- pnpm exec nx run ketryx:dev -H 0.0.0.0 --no-tui
 '''
 
 [[tabs]]

@@ -24,6 +24,22 @@ elif [[ -f "$HERDR_CONFIG" && ! -L "$HERDR_CONFIG" ]] && cmp -s "$DIR/herdr/conf
   ln -s "$DIR/herdr/config.toml" "$HERDR_CONFIG"
 fi
 
+# Link only portable Pi config, not the entire private agent directory.
+PI_AGENT_DIR="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
+mkdir -p "$PI_AGENT_DIR"
+for file in settings.json keybindings.json; do
+  source="$DIR/pi/$file"
+  target="$PI_AGENT_DIR/$file"
+  if [[ ! -e "$target" && ! -L "$target" ]]; then
+    ln -s "$source" "$target"
+  elif [[ -f "$target" && ! -L "$target" ]] && cmp -s "$source" "$target"; then
+    rm "$target"
+    ln -s "$source" "$target"
+  elif [[ ! -L "$target" || "$(readlink "$target")" != "$source" ]]; then
+    printf 'Skipping existing Pi config (not overwritten): %s\n' "$target"
+  fi
+done
+
 if [[ "$(uname)" == "Darwin" ]]; then
   LAZYGIT_CONFIG_DIR="$HOME/Library/Application Support/lazygit"
 else

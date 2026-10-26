@@ -1,0 +1,5 @@
+# Only explicitly approved, portable config belongs here, never agent state.
+*
+!.gitignore
+!settings.json
+!keybindings.json

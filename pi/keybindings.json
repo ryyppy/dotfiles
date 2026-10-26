@@ -1,0 +1,4 @@
+{
+  "tui.input.newLine": ["shift+enter", "alt+j"],
+  "tui.altScreen.bottom": "alt+n"
+}

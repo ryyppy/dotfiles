@@ -46,7 +46,8 @@ The starship config is in `starship.toml` (symlinked by `install.sh`).
 
 ## Herdr Setup
 
-The Herdr config is in `herdr/config.toml` and is symlinked to `~/.config/herdr/config.toml` by `install.sh`.
+The Herdr config is in [`herdr/config.toml`](herdr/config.toml) and is symlinked to `~/.config/herdr/config.toml` by `install.sh`.
+See its `[keys]` section for custom keybindings.
 
 **Shell startup time:** ~120ms
 
@@ -88,12 +89,12 @@ vim.g.python3_host_prog = vim.fn.expand('~/.local/share/uv/tools/pynvim/bin/pyth
 
 ## Pi Setup
 
-`pi/settings.json` and `pi/keybindings.json` are the portable user config.
+[`pi/settings.json`](pi/settings.json) and [`pi/keybindings.json`](pi/keybindings.json) are the portable user config.
+See `pi/keybindings.json` for custom keybindings.
 `install.sh` symlinks them into `~/.pi/agent/` (or `PI_CODING_AGENT_DIR`).
 It converts identical existing files to symlinks, but leaves differing files and
 other symlinks untouched. Back up and reconcile any skipped files manually.
-Run `/reload` in Pi after changing config. Alt+N jumps to the transcript bottom
-and follows new output in fullscreen mode.
+Run `/reload` in Pi after changing config.
 
 Use `pi/`, not `.pi/`: `.pi/` is Pi's project-specific configuration directory.
 Pi can update the linked settings when preferences change; review the Git diff.

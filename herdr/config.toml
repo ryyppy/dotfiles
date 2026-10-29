@@ -14,6 +14,9 @@ rows = [["state_icon", "workspace", "tab"], ["agent", "state_text"]]
 
 [keys]
 prefix = "ctrl+j"
+previous_agent = "alt+p"
+next_agent = "alt+n"
+focus_agent = "alt+1..9"
 toggle_sidebar = "prefix+backslash"
 focus_pane_right = ""
 last_pane = "prefix+l"
